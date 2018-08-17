@@ -1,3 +1,5 @@
+require 'redmine_issue_progress'
+
 Redmine::Plugin.register :redmine_issue_progress do
   name 'Redmine Issue Progress plugin'
   author '//twinslash'
