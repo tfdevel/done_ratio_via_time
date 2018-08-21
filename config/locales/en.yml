@@ -1,3 +1,13 @@
 en:
   label_include_time_from: include time from
   label_include_time_by: time is included in
+  field_done_ratio_calculation_type: Algorithm for done ratio calculating
+  default_done_ratio_calculation_type: Default algorithm for done ratio calculating for all projects
+  calculation_type_default: use default value
+  calculation_type_manual: manual
+  calculation_type_self: self
+  calculation_type_descendants: descendants
+  calculation_type_linked: linked
+  calculation_type_self_and_descendants: self and descendants
+  calculation_type_full: all
+  label_issue_progress_section: Done ratio calculating

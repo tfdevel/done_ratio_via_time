@@ -1,0 +1,17 @@
+<h2><%=l(:label_settings)%></h2>
+<div class='box tabular settings'>
+  <%= form_tag(controller: :issue_progress_settings, action: :update) do %>
+    <p>
+      <label><%=l(:default_done_ratio_calculation_type)%></label>
+      <span class="check_box_group">
+        <% Issue::DONE_RATIO_CALCULATION_TYPES.except(Issue::CALCULATION_TYPE_DEFAULT).each do |k, v| %>
+          <label>
+            <%= radio_button_tag 'settings[done_ratio_calculation_type]', k, @settings[:done_ratio_calculation_type].eql?(k.to_s) %>
+            <%= l(v) %>
+          </label>
+        <% end %>
+      </span>
+    </p>
+    <%= submit_tag l(:button_apply), :class => "small", :name => nil %>
+  <% end %>
+</div>

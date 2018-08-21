@@ -1,0 +1,37 @@
+<%= fields_for :issue, issue do |f| %>
+  <p>
+    <label><%=l(:field_done_ratio)%></label>
+    <%= f.number_field :done_ratio, in: 0..100, required: @issue.required_attribute?('done_ratio') %>
+  </p>
+  <p>
+    <label><%=l(:field_done_ratio_calculation_type)%></label>
+    <span class="check_box_group">
+      <%= f.collection_radio_buttons :done_ratio_calculation_type, Issue::DONE_RATIO_CALCULATION_TYPES.map { |num, label| [num, l(label)] }, :first, :second do |b| %>
+        <%
+          label_params = if IssueProgressSetup.settings[:global][:done_ratio_calculation_type].eql?(b.object.first.to_s)
+            { style: 'font-weight:bold;', :"data-is-default" => true }
+          else
+            {}
+          end
+        %>
+        <% b.label(label_params) { b.radio_button + b.text } %>
+      <% end %>
+    </span>
+  </p>
+<% end %>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('input[type="radio"][name="issue[done_ratio_calculation_type]"]').change(function() {
+      var defaultMode = $('label[data-is-default="true"] input[type="radio"]').val();
+      var defaultModeButton = '<%= Issue::CALCULATION_TYPE_DEFAULT %>';
+      var manualMode = '<%= Issue::CALCULATION_TYPE_MANUAL %>';
+      var currentMode = $('input[type="radio"][name="issue[done_ratio_calculation_type]"]:checked').val();
+      if($('#issue_done_ratio').length > 0) {
+        if(currentMode == manualMode || (currentMode == defaultModeButton && defaultMode == manualMode)) {
+          $('#issue_done_ratio').parent().show();
+        } else $('#issue_done_ratio').parent().hide();
+      }
+    }).trigger('change');
+  });
+</script>

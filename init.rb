@@ -7,4 +7,10 @@ Redmine::Plugin.register :redmine_issue_progress do
   version '1.0.0'
   url 'http://example.com/path/to/plugin'
   author_url 'http://example.com/about'
+
+  menu :admin_menu, :issue_progress, { controller: 'issue_progress_settings',
+                                       action: 'edit' },
+       caption: :label_issue_progress_section,
+       html: { class: 'icon icon-package' }
+  settings default: { global: { done_ratio_calculation_type: '1' } }
 end

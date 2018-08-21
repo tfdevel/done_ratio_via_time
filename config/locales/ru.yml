@@ -1,3 +1,13 @@
 ru:
   label_include_time_from: учитывать время от
   label_include_time_by: время учитывается в
+  field_done_ratio_calculation_type: Алгоритм расчёта готовности
+  default_done_ratio_calculation_type: Алгоритм расчёта готовности по умолчанию для всех проектов
+  calculation_type_default: значение по умолчанию
+  calculation_type_manual: ручной
+  calculation_type_self: только данная
+  calculation_type_descendants: дочерние
+  calculation_type_linked: связанные
+  calculation_type_self_and_descendants: данная + дочерние
+  calculation_type_full: все
+  label_issue_progress_section: Расчёт готовности

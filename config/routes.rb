@@ -1,2 +1,2 @@
-# Plugin's routes
-# See: http://guides.rubyonrails.org/routing.html
+get 'issue_progress_settings/edit', to: 'issue_progress_settings#edit'
+post 'issue_progress_settings/update', to: 'issue_progress_settings#update'
