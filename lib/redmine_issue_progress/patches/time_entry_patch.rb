@@ -11,7 +11,8 @@ module RedmineIssueProgress
 
       module InstanceMethods
         def update_issue_done_ratio
-          return unless issue
+          return unless issue && issue.project.try(:module_enabled?,
+                                                   :issue_progress)
 
           issue.init_journal(User.current)
           issue.done_ratio = CalculateDoneRatio.call(issue)

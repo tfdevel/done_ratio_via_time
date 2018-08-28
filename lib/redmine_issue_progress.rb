@@ -11,7 +11,10 @@ Rails.configuration.to_prepare do
   require 'redmine_issue_progress/patches/time_entry_patch'
   require 'redmine_issue_progress/patches/issues_helper_patch'
   require 'redmine_issue_progress/patches/issue_relations_controller_patch'
+  require 'redmine_issue_progress/patches/issue_query_patch'
+  require 'redmine_issue_progress/patches/project_patch'
 
   # hooks
   require 'redmine_issue_progress/hooks/views_issues_hook'
+  require 'redmine_issue_progress/hooks/view_projects_hook'
 end

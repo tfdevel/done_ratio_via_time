@@ -27,9 +27,16 @@ class IssueTest < ActiveSupport::TestCase
 
   def setup
     @issue = Issue.generate!
+    @issue.project.enable_module!(:issue_progress)
     @issue.update_columns(estimated_hours: 4, done_ratio_calculation_type: Issue::CALCULATION_TYPE_MANUAL)
     @issue.time_entries.create!(hours: 2, user: User.first, spent_on: Date.current)
     User.current = User.first
+    manager_role = Role.find_by_name("Manager")
+    manager_role.permissions << :edit_done_ratio_calculation_type
+    manager_role.save!
+
+    Member.create!(project: @issue.project, principal: User.first, roles: [manager_role])
+    @issue.project.reload
   end
 
   test 'change done_ratio with manual mode' do

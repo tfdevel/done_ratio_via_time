@@ -3,6 +3,7 @@ ru:
   label_include_time_by: время учитывается в
   field_done_ratio_calculation_type: Алгоритм расчёта готовности
   default_done_ratio_calculation_type: Алгоритм расчёта готовности по умолчанию для всех проектов
+  default_project_done_ratio_calculation_type: Алгоритм расчёта готовности по умолчанию
   calculation_type_default: значение по умолчанию
   calculation_type_manual: ручной
   calculation_type_self: только данная
@@ -11,3 +12,8 @@ ru:
   calculation_type_self_and_descendants: данная + дочерние
   calculation_type_full: все
   label_issue_progress_section: Расчёт готовности
+  project_module_issue_progress: Расчёт готовности
+  permission_view_done_ratio_calculation_type: Отображение метода расчёта готовности
+  permission_edit_done_ratio_calculation_type: Редактирование метода расчёта готовности
+  label_mode_auto: авто
+  label_mode_manual: вручную

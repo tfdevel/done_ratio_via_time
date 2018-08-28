@@ -41,4 +41,13 @@ module IssueProgressSetup
     SettingsProxy.instance.to_h
   end
   module_function :settings
+
+  def default_calculation_type(project)
+    if project && project.default_done_ratio_calculation_type
+      project.default_done_ratio_calculation_type
+    else
+      settings[:global][:done_ratio_calculation_type].to_i
+    end
+  end
+  module_function :default_calculation_type
 end

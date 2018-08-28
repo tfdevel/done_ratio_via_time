@@ -41,7 +41,8 @@ module RedmineIssueProgress
 
       module InstanceMethods
         def update_issue_done_ratio
-          return if relation_type != IssueRelation::TYPE_INCLUDE_TIME_FROM
+          return if relation_type != IssueRelation::TYPE_INCLUDE_TIME_FROM ||
+                    !issue_from.project.try(:module_enabled?, :issue_progress)
 
           issue_from.init_journal(User.current)
           issue_from.done_ratio = CalculateDoneRatio.call(issue_from)
