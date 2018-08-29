@@ -1,0 +1,3 @@
+<% unless @issue.reload.disabled_core_fields.include?('done_ratio') || @relation.relation_type != IssueRelation::TYPE_INCLUDE_TIME_FROM %>
+  $('div.progress.attribute .value').html('<%= escape_javascript(progress_bar(@issue.done_ratio, :legend => "#{@issue.done_ratio}%")) %>');
+<% end %>

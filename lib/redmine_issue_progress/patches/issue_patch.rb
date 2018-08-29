@@ -6,7 +6,6 @@ module RedmineIssueProgress
         base.send(:include, InstanceMethods)
         base.extend(ClassMethods)
         base.class_eval do
-          attr_accessible :done_ratio_calculation_type
           safe_attributes 'done_ratio_calculation_type'
 
           alias_method_chain :done_ratio_derived?, :auto_calculation
