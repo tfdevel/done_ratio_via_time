@@ -66,13 +66,18 @@ class CalculateDoneRatio
     end
   end
 
+  def ratios_sum(arr)
+    arr.reject { |e| e[0].zero? || e[1].zero? }
+       .transpose.map { |e| e.reduce(:+) }
+  end
+
   def done_ratio_descendants_values(issue, ids, include_current_time = false)
     tmp = issue.descendants.map do |child|
       ids, values = time_values(child, ids, true)
       values
     end
     tmp << done_ratio_self_values(issue) if include_current_time
-    tmp.transpose.map { |e| e.reduce(:+) }
+    ratios_sum(tmp)
   end
 
   def done_ratio_linked_values(issue, ids, include_current_time = false)
@@ -86,7 +91,7 @@ class CalculateDoneRatio
       values
     end
     tmp << done_ratio_self_values(issue) if include_current_time
-    tmp.transpose.map { |e| e.reduce(:+) }
+    ratios_sum(tmp)
   end
 
   def done_ratio_self_and_descendants_values(issue, ids)
@@ -94,7 +99,7 @@ class CalculateDoneRatio
       ids, values = time_values(child, ids, true)
       values
     end
-    (res + [done_ratio_self_values(issue)]).transpose.map { |e| e.reduce(:+) }
+    ratios_sum(res + [done_ratio_self_values(issue)])
   end
 
   def done_ratio_full_values(issue, ids)
@@ -114,8 +119,8 @@ class CalculateDoneRatio
       values
     end
 
-    (scope1_result +
+    ratios_sum(scope1_result +
       scope2_result +
-      [done_ratio_self_values(issue)]).transpose.map { |e| e.reduce(:+) }
+      [done_ratio_self_values(issue)])
   end
 end

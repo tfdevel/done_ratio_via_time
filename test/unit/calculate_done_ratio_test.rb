@@ -61,7 +61,7 @@ class CalculateDoneRatioTest < ActiveSupport::TestCase
     issue2.parent_issue_id = @issue.id
     issue2.estimated_hours = 2
     issue2.save!
-    assert_equal(33, CalculateDoneRatio.call(@issue))  # 2/6 ~ 0.33
+    assert_equal(50, CalculateDoneRatio.call(@issue))  # 2/4 = 0.5
     issue2.time_entries.create!(user: User.first, hours: 0.5, spent_on: Date.current)
     assert_equal(42, CalculateDoneRatio.call(@issue)) # 2.5/6 ~ 0.42
   end
@@ -91,9 +91,9 @@ class CalculateDoneRatioTest < ActiveSupport::TestCase
     issue3.estimated_hours = 3.5
     issue3.save!
 
-    assert_equal(21, CalculateDoneRatio.call(@issue)) # 2/9.5 ~ 0.21
+    assert_equal(50, CalculateDoneRatio.call(@issue)) # 2/4 = 0.5
     issue2.time_entries.create!(user: User.first, hours: 0.5, spent_on: Date.current)
-    assert_equal(26, CalculateDoneRatio.call(@issue)) # 2.5/9.5 ~ 0.26
+    assert_equal(42, CalculateDoneRatio.call(@issue)) # 2.5/6 ~ 0.42
     issue3.time_entries.create!(user: User.first, hours: 1, spent_on: Date.current)
     assert_equal(37, CalculateDoneRatio.call(@issue)) # 3.5/9.5 ~ 0.37
   end
@@ -113,9 +113,9 @@ class CalculateDoneRatioTest < ActiveSupport::TestCase
     IssueRelation.create!(issue_from: issue2, issue_to: issue3,
                           relation_type: IssueRelation::TYPE_INCLUDE_TIME_FROM)
 
-    assert_equal(21, CalculateDoneRatio.call(@issue)) # 2/9.5 ~ 0.21
+    assert_equal(50, CalculateDoneRatio.call(@issue)) # 2/4 = 0.5
     issue2.time_entries.create!(user: User.first, hours: 0.5, spent_on: Date.current)
-    assert_equal(26, CalculateDoneRatio.call(@issue)) # 2.5/9.5 ~ 0.26
+    assert_equal(33, CalculateDoneRatio.call(@issue)) # 2.5/7.5 ~ 0.33
     issue3.time_entries.create!(user: User.first, hours: 1, spent_on: Date.current)
     assert_equal(37, CalculateDoneRatio.call(@issue)) # 3.5/9.5 ~ 0.37
   end

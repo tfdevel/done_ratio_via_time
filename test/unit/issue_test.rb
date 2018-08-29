@@ -61,9 +61,9 @@ class IssueTest < ActiveSupport::TestCase
     @issue.safe_attributes = { 'estimated_hours' => '5' }
     @issue.save
     assert_equal(5, @issue.estimated_hours)
-    assert_equal(29, @issue.done_ratio) # 2/7 ~ 0.29
+    assert_equal(40, @issue.done_ratio) # 2/5 = 0.4
     @issue.time_entries.create!(user: User.first, hours: 1, spent_on: Date.current)
-    assert_equal(43, @issue.reload.done_ratio) # 3/7 ~ 0.43
+    assert_equal(60, @issue.reload.done_ratio) # 3/5 = 0.6
     issue2.time_entries.create!(user: User.first, hours: 0.5, spent_on: Date.current)
     @issue.safe_attributes = { 'done_ratio_calculation_type' => Issue::CALCULATION_TYPE_DESCENDANTS.to_s }
     @issue.save
