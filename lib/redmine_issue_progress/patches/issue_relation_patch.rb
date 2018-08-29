@@ -4,19 +4,29 @@ module RedmineIssueProgress
     module IssueRelationPatch
       def self.included(base)
         include_time_from = 'include_time_from'
+        include_time_by = 'include_time_by'
 
         new_types = base::TYPES.merge(
           include_time_from => {
             name: :label_include_time_from,
             sym_name: :label_include_time_by,
             order: 10,
-            sym: include_time_from
+            sym: include_time_by
+          },
+
+          include_time_by => {
+            name: :label_include_time_by,
+            sym_name: :label_include_time_from,
+            order: 11,
+            sym: include_time_from,
+            reverse: include_time_from
           }
         )
 
         base.send(:include, InstanceMethods)
         base.class_eval do
           const_set :TYPE_INCLUDE_TIME_FROM, include_time_from
+          const_set :TYPE_INCLUDE_TIME_BY, include_time_by
 
           remove_const :TYPES
           const_set :TYPES, new_types.freeze
