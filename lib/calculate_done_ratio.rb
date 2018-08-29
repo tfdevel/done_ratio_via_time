@@ -12,12 +12,15 @@ class CalculateDoneRatio
       return issue.done_ratio
     end
 
-    done_ratio_result(*time_values(issue))
+    _, values = time_values(issue)
+    done_ratio_result(*values)
   end
 
   private
 
-  def time_values(issue, include_current_time = false)
+  def time_values(issue, ids = [], include_current_time = false)
+    return [ids, [0, 0]] if ids.include?(issue.id)
+
     done_ratio_calculation_type =
       Issue.done_ratio_calculation_type_transformed(issue)
 
@@ -28,18 +31,22 @@ class CalculateDoneRatio
       when Issue::CALCULATION_TYPE_SELF
         done_ratio_self_values(issue)
       when Issue::CALCULATION_TYPE_DESCENDANTS
-        done_ratio_descendants_values(issue, include_current_time)
+        done_ratio_descendants_values(issue, ids, include_current_time)
       when Issue::CALCULATION_TYPE_LINKED
-        done_ratio_linked_values(issue, include_current_time)
+        done_ratio_linked_values(issue, ids, include_current_time)
       when Issue::CALCULATION_TYPE_SELF_AND_DESCENDANTS
-        done_ratio_self_and_descendants_values(issue)
+        done_ratio_self_and_descendants_values(issue, ids)
       when Issue::CALCULATION_TYPE_FULL
-        done_ratio_full_values(issue)
+        done_ratio_full_values(issue, ids)
       when Issue::CALCULATION_TYPE_MANUAL
         done_ratio_self_values(issue)
       end
 
-    time_params.present? ? time_params : [0, 0]
+    if time_params.present?
+      [ids << issue.id, time_params]
+    else
+      [ids << issue.id, [0, 0]]
+    end
   end
 
   def done_ratio_self_values(issue)
@@ -59,36 +66,56 @@ class CalculateDoneRatio
     end
   end
 
-  def done_ratio_descendants_values(issue, include_current_time = false)
-    tmp = issue.descendants.map { |child| time_values(child, true) }
+  def done_ratio_descendants_values(issue, ids, include_current_time = false)
+    tmp = issue.descendants.map do |child|
+      ids, values = time_values(child, ids, true)
+      values
+    end
     tmp << done_ratio_self_values(issue) if include_current_time
     tmp.transpose.map { |e| e.reduce(:+) }
   end
 
-  def done_ratio_linked_values(issue, include_current_time = false)
+  def done_ratio_linked_values(issue, ids, include_current_time = false)
     scope =
       Issue.where(id: issue.relations_from
                            .where(relation_type:
                               IssueRelation::TYPE_INCLUDE_TIME_FROM)
                            .select(:issue_to_id))
-    tmp = scope.map { |child| time_values(child, true) }
+    tmp = scope.map do |child|
+      ids, values = time_values(child, ids, true)
+      values
+    end
     tmp << done_ratio_self_values(issue) if include_current_time
     tmp.transpose.map { |e| e.reduce(:+) }
   end
 
-  def done_ratio_self_and_descendants_values(issue)
-    res = issue.descendants.map { |child| time_values(child, true) }
+  def done_ratio_self_and_descendants_values(issue, ids)
+    res = issue.descendants.map do |child|
+      ids, values = time_values(child, ids, true)
+      values
+    end
     (res + [done_ratio_self_values(issue)]).transpose.map { |e| e.reduce(:+) }
   end
 
-  def done_ratio_full_values(issue)
+  def done_ratio_full_values(issue, ids)
     scope1 = issue.descendants
     scope2 = Issue.where(id: issue.relations_from
                                   .where(relation_type:
                                     IssueRelation::TYPE_INCLUDE_TIME_FROM)
                                   .select(:issue_to_id))
-    (scope1.map { |child| time_values(child, true) } +
-      scope2.map { |child| time_values(child, true) } +
+
+    scope1_result = scope1.map do |child|
+      ids, values = time_values(child, ids, true)
+      values
+    end
+
+    scope2_result = scope2.map do |child|
+      ids, values = time_values(child, ids, true)
+      values
+    end
+
+    (scope1_result +
+      scope2_result +
       [done_ratio_self_values(issue)]).transpose.map { |e| e.reduce(:+) }
   end
 end

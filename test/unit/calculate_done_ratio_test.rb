@@ -120,6 +120,45 @@ class CalculateDoneRatioTest < ActiveSupport::TestCase
     assert_equal(37, CalculateDoneRatio.call(@issue)) # 3.5/9.5 ~ 0.37
   end
 
+  test '#done_ratio_full uniqueness' do
+    @issue.update_column(:done_ratio_calculation_type, Issue::CALCULATION_TYPE_FULL)
+    issue2 = Issue.generate!
+    issue2.parent_issue_id = @issue.id
+    issue2.done_ratio_calculation_type = Issue::CALCULATION_TYPE_FULL
+    issue2.estimated_hours = 3
+    issue2.time_entries.new(user: User.first, hours: 2, spent_on: Date.current)
+    issue2.save!
+
+    issue3 = Issue.generate!
+    issue3.done_ratio_calculation_type = Issue::CALCULATION_TYPE_FULL
+    issue3.estimated_hours = 7
+    issue3.time_entries.new(user: User.first, hours: 1, spent_on: Date.current)
+    issue3.save!
+    IssueRelation.create!(issue_from: @issue, issue_to: issue3,
+                          relation_type: IssueRelation::TYPE_INCLUDE_TIME_FROM)
+    IssueRelation.create!(issue_from: issue2, issue_to: issue3,
+                          relation_type: IssueRelation::TYPE_INCLUDE_TIME_FROM)
+
+    issue4 = Issue.generate!
+    issue4.parent_issue_id = issue3.id
+    issue4.done_ratio_calculation_type = Issue::CALCULATION_TYPE_SELF
+    issue4.estimated_hours = 5
+    issue4.time_entries.new(user: User.first, hours: 1, spent_on: Date.current)
+    issue4.save!
+
+    issue5 = Issue.generate!
+    issue5.parent_issue_id = issue3.id
+    issue5.done_ratio_calculation_type = Issue::CALCULATION_TYPE_LINKED
+    issue5.estimated_hours = 7
+    issue5.time_entries.new(user: User.first, hours: 5, spent_on: Date.current)
+    issue5.save!
+    IssueRelation.create!(issue_from: issue5, issue_to: issue4,
+                          relation_type: IssueRelation::TYPE_INCLUDE_TIME_FROM)
+
+    assert_equal(42, CalculateDoneRatio.call(@issue)) # 11/26 ~ 0.42
+    assert_equal(41, CalculateDoneRatio.call(issue2)) # 9/22 ~ 0.41
+  end
+
   test '#done_ratio_full tree from 6 issues' do
     @issue.update_column(:done_ratio_calculation_type, Issue::CALCULATION_TYPE_LINKED)
     issue1 = Issue.generate!
