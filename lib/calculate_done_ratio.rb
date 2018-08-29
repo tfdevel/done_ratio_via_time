@@ -59,7 +59,7 @@ class CalculateDoneRatio
       if spent_hours >= estimated_hours
         100
       else
-        (spent_hours / estimated_hours * 100).round
+        (spent_hours / estimated_hours * 100).to_i
       end
     else
       0

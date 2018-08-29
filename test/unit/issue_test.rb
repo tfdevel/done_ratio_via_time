@@ -81,7 +81,7 @@ class IssueTest < ActiveSupport::TestCase
                           relation_type: IssueRelation::TYPE_INCLUDE_TIME_FROM)
 
     assert_equal(0, issue1.done_ratio)
-    assert_equal(67, @issue.reload.done_ratio) # 2/3 ~ 0.67
+    assert_equal(66, @issue.reload.done_ratio) # 2/3 ~ 0.66
 
     issue2 = Issue.generate!
     issue2.done_ratio_calculation_type = Issue::CALCULATION_TYPE_FULL
@@ -135,11 +135,11 @@ class IssueTest < ActiveSupport::TestCase
     issue4.save
     assert_equal(53, @issue.reload.done_ratio) # 16/30 ~ 0.53
     issue3.time_entries.create(user: User.first, hours: 1, spent_on: Date.current)
-    assert_equal(57, @issue.reload.done_ratio) # 17/30 ~ 0.57
+    assert_equal(56, @issue.reload.done_ratio) # 17/30 ~ 0.56
     relation.destroy
-    assert_equal(64, @issue.reload.done_ratio) # 14/22 ~ 0.64
+    assert_equal(63, @issue.reload.done_ratio) # 14/22 ~ 0.63
     IssueRelation.create!(issue_from: @issue, issue_to: issue5,
                           relation_type: IssueRelation::TYPE_INCLUDE_TIME_FROM)
-    assert_equal(57, @issue.reload.done_ratio) # 17/30 ~ 0.57
+    assert_equal(56, @issue.reload.done_ratio) # 17/30 ~ 0.56
   end
 end

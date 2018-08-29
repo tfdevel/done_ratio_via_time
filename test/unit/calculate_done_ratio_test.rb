@@ -63,7 +63,7 @@ class CalculateDoneRatioTest < ActiveSupport::TestCase
     issue2.save!
     assert_equal(50, CalculateDoneRatio.call(@issue))  # 2/4 = 0.5
     issue2.time_entries.create!(user: User.first, hours: 0.5, spent_on: Date.current)
-    assert_equal(42, CalculateDoneRatio.call(@issue)) # 2.5/6 ~ 0.42
+    assert_equal(41, CalculateDoneRatio.call(@issue)) # 2.5/6 ~ 0.41
   end
 
   test '#done_ratio_linked' do
@@ -93,9 +93,9 @@ class CalculateDoneRatioTest < ActiveSupport::TestCase
 
     assert_equal(50, CalculateDoneRatio.call(@issue)) # 2/4 = 0.5
     issue2.time_entries.create!(user: User.first, hours: 0.5, spent_on: Date.current)
-    assert_equal(42, CalculateDoneRatio.call(@issue)) # 2.5/6 ~ 0.42
+    assert_equal(41, CalculateDoneRatio.call(@issue)) # 2.5/6 ~ 0.41
     issue3.time_entries.create!(user: User.first, hours: 1, spent_on: Date.current)
-    assert_equal(37, CalculateDoneRatio.call(@issue)) # 3.5/9.5 ~ 0.37
+    assert_equal(36, CalculateDoneRatio.call(@issue)) # 3.5/9.5 ~ 0.36
   end
 
   test '#done_ratio_full chain from 3 issues' do
@@ -117,7 +117,7 @@ class CalculateDoneRatioTest < ActiveSupport::TestCase
     issue2.time_entries.create!(user: User.first, hours: 0.5, spent_on: Date.current)
     assert_equal(33, CalculateDoneRatio.call(@issue)) # 2.5/7.5 ~ 0.33
     issue3.time_entries.create!(user: User.first, hours: 1, spent_on: Date.current)
-    assert_equal(37, CalculateDoneRatio.call(@issue)) # 3.5/9.5 ~ 0.37
+    assert_equal(36, CalculateDoneRatio.call(@issue)) # 3.5/9.5 ~ 0.36
   end
 
   test '#done_ratio_full uniqueness' do
@@ -156,7 +156,7 @@ class CalculateDoneRatioTest < ActiveSupport::TestCase
                           relation_type: IssueRelation::TYPE_INCLUDE_TIME_FROM)
 
     assert_equal(42, CalculateDoneRatio.call(@issue)) # 11/26 ~ 0.42
-    assert_equal(41, CalculateDoneRatio.call(issue2)) # 9/22 ~ 0.41
+    assert_equal(40, CalculateDoneRatio.call(issue2)) # 9/22 ~ 0.40
   end
 
   test '#done_ratio_full tree from 6 issues' do
@@ -199,7 +199,7 @@ class CalculateDoneRatioTest < ActiveSupport::TestCase
     IssueRelation.create!(issue_from: issue2, issue_to: issue5,
                           relation_type: IssueRelation::TYPE_INCLUDE_TIME_FROM)
 
-    assert_equal(59, CalculateDoneRatio.call(issue2)) # 10/17 ~ 0.59
+    assert_equal(58, CalculateDoneRatio.call(issue2)) # 10/17 ~ 0.58
     assert_equal(55, CalculateDoneRatio.call(@issue)) # 16/29 ~ 0.55
   end
 
@@ -244,7 +244,7 @@ class CalculateDoneRatioTest < ActiveSupport::TestCase
                           relation_type: IssueRelation::TYPE_INCLUDE_TIME_FROM)
 
     assert_equal(80, CalculateDoneRatio.call(issue2)) # 4/5 = 0.8
-    assert_equal(59, CalculateDoneRatio.call(@issue)) # 10/17 ~ 0.59
+    assert_equal(58, CalculateDoneRatio.call(@issue)) # 10/17 ~ 0.58
   end
 
   test '#done_ratio_full tree from 6 issues with full mode in the root' do
@@ -288,6 +288,6 @@ class CalculateDoneRatioTest < ActiveSupport::TestCase
                           relation_type: IssueRelation::TYPE_INCLUDE_TIME_FROM)
 
     assert_equal(70, CalculateDoneRatio.call(issue2)) # 7/10 = 0.7
-    assert_equal(58, CalculateDoneRatio.call(@issue)) # 15/26 ~ 0.58
+    assert_equal(57, CalculateDoneRatio.call(@issue)) # 15/26 ~ 0.57
   end
 end
