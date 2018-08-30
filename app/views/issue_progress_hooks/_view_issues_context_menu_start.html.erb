@@ -1,0 +1,18 @@
+<% if defined?(@project) && @project.try(:module_enabled?, :issue_progress) %>
+  <li class="folder">
+    <a href="#" class="submenu"><%= l(:field_done_ratio_calculation_type) %></a>
+    <ul>
+      <% Issue::DONE_RATIO_CALCULATION_TYPES.except.each do |k, v| %>
+        <li>
+          <%= context_menu_link l(v),
+                                bulk_update_issues_path(:ids => @issues.map(&:id),
+                                                        :issue => {:done_ratio_calculation_type => k},
+                                                        :back_url => @back),
+                                :method => :post,
+                                :selected => (@issue && k == @issue.done_ratio_calculation_type),
+                                :disabled => !@can[:edit] %>
+        </li>
+      <% end %>
+    </ul>
+  </li>
+<% end %>

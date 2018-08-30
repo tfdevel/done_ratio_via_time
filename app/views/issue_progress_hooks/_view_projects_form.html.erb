@@ -1,0 +1,10 @@
+<% if project.module_enabled?(:issue_progress) %>
+  <p>
+    <label><%=l(:default_project_done_ratio_calculation_type)%></label>
+    <span class="check_box_group">
+      <%= form.collection_radio_buttons :default_done_ratio_calculation_type, Issue::DONE_RATIO_CALCULATION_TYPES.except(Issue::CALCULATION_TYPE_DEFAULT).map { |num, label| [num, l(label)] }, :first, :second do |b| %>
+        <% b.label { b.radio_button + b.text } %>
+      <% end %>
+    </span>
+  </p>
+<% end %>

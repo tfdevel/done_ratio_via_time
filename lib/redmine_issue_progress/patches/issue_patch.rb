@@ -73,7 +73,7 @@ module RedmineIssueProgress
         end
 
         def safe_attributes_with_done_ratio_check=(attrs, user = User.current)
-          if project.try(:module_enabled?, :issue_progress)
+          if attrs && project.try(:module_enabled?, :issue_progress)
             new_done_ratio_calculation_type = attrs['done_ratio_calculation_type']
             if new_done_ratio_calculation_type.present?
               new_done_ratio_calculation_type =

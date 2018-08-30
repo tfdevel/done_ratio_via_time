@@ -15,6 +15,6 @@ Rails.configuration.to_prepare do
   require 'redmine_issue_progress/patches/project_patch'
 
   # hooks
-  require 'redmine_issue_progress/hooks/views_issues_hook'
-  require 'redmine_issue_progress/hooks/view_projects_hook'
+  require 'redmine_issue_progress/issue_progress_hooks/views_issues_hook'
+  require 'redmine_issue_progress/issue_progress_hooks/view_projects_hook'
 end
