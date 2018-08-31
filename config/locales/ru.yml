@@ -17,3 +17,7 @@ ru:
   permission_edit_done_ratio_calculation_type: Редактирование метода расчёта готовности
   label_mode_auto: авто
   label_mode_manual: вручную
+  label_last_recalculation_was: последняя успешная рекалькуляция была
+  label_update_complete: Рекалькуляция задач завершена
+  label_updating: Рекалькуляция задач
+  label_update_error: Ошибка при рекалькуляции задач

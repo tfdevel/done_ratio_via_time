@@ -17,3 +17,7 @@ en:
   permission_edit_done_ratio_calculation_type: Edit done ratio calculation type
   label_mode_auto: auto
   label_mode_manual: manual
+  label_last_recalculation_was: last successful recalculation was
+  label_update_complete: Recalculation completed
+  label_updating: Recalculating issues
+  label_update_error: Error with recalculation

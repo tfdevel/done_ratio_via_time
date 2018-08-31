@@ -12,10 +12,12 @@ Redmine::Plugin.register :redmine_issue_progress do
                                        action: 'edit' },
        caption: :label_issue_progress_section,
        html: { class: 'icon icon-package' }
-  settings default: { global: { done_ratio_calculation_type: '1' } }
+  settings default: { global: { done_ratio_calculation_type: '1' },
+                      job_id: nil,
+                      job_successful_complete_at: nil }
 
   project_module :issue_progress do
     permission :view_done_ratio_calculation_type, {}
-    permission :edit_done_ratio_calculation_type, {}
+    permission :edit_done_ratio_calculation_type, job_statuses: [:index]
   end
 end

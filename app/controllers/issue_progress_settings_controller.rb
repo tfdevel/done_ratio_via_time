@@ -1,5 +1,6 @@
 class IssueProgressSettingsController < ApplicationController
   before_action :require_admin
+  before_action :check_mode_change, only: :update
 
   def edit
     @settings = IssueProgressSetup.settings[:global]
@@ -15,5 +16,16 @@ class IssueProgressSettingsController < ApplicationController
 
   def settings_params
     params.require(:settings).permit(:done_ratio_calculation_type)
+  end
+
+  def check_mode_change
+    new_done_ratio_calculation_type =
+      settings_params[:done_ratio_calculation_type]
+    if new_done_ratio_calculation_type.present? &&
+       IssueProgressSetup.settings[:global][:done_ratio_calculation_type] !=
+       new_done_ratio_calculation_type
+      job_id = IssueDoneRatioRecalculationWorker.perform_async
+      IssueProgressSetup.setting[:job_id] = job_id
+    end
   end
 end

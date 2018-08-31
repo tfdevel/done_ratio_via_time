@@ -108,6 +108,10 @@ module RedmineIssueProgress
                           done_ratio_calculation_type_changed? ||
                           parent_id_changed?)
 
+          set_calculated_done_ratio
+        end
+
+        def set_calculated_done_ratio
           current_issue_journal = current_journal || init_journal(User.current)
           update_column(:done_ratio, CalculateDoneRatio.call(self))
           current_issue_journal.save

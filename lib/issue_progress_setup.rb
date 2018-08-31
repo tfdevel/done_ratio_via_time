@@ -6,9 +6,19 @@ module IssueProgressSetup
 
     def []=(key, value)
       key = key.intern if key.is_a?(String)
-      settings = safe_load
-      settings[key] = value
-      Setting.plugin_redmine_issue_progress = settings
+      ActiveRecord::Base.transaction do
+        if Redmine::Database.mysql?
+          ActiveRecord::Base.connection.execute("LOCK TABLES #{Setting.table_name} WRITE")
+        elsif Redmine::Database.postgresql?
+          ActiveRecord::Base.connection.execute("LOCK TABLE #{Setting.table_name} IN ACCESS EXCLUSIVE MODE")
+        end
+        settings = safe_load
+        settings[key] = value
+        Setting.plugin_redmine_issue_progress = settings
+        if Redmine::Database.mysql?
+          ActiveRecord::Base.connection.execute('UNLOCK TABLES')
+        end
+      end
     end
 
     def to_h
