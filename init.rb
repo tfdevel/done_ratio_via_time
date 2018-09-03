@@ -14,7 +14,8 @@ Redmine::Plugin.register :redmine_issue_progress do
        html: { class: 'icon icon-package' }
   settings default: { global: { done_ratio_calculation_type: '1' },
                       job_id: nil,
-                      job_successful_complete_at: nil }
+                      job_successful_complete_at: nil,
+                      enable_time_overrun: nil }
 
   project_module :issue_progress do
     permission :view_done_ratio_calculation_type, {}

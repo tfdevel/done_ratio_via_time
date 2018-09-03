@@ -13,6 +13,11 @@
       </span>
       <%= render 'shared/job_status_indicator' %>
     </p>
+
+    <p>
+      <label><%=l(:label_enable_time_overrun)%></label>
+      <%= check_box_tag 'settings[enable_time_overrun]', 'true', @settings[:enable_time_overrun] %>
+    </p>
     <%= submit_tag l(:button_apply), :class => "small", :name => nil %>
   <% end %>
 </div>

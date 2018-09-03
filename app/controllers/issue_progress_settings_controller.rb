@@ -15,7 +15,8 @@ class IssueProgressSettingsController < ApplicationController
   private
 
   def settings_params
-    params.require(:settings).permit(:done_ratio_calculation_type)
+    params.require(:settings).permit(:done_ratio_calculation_type,
+                                     :enable_time_overrun)
   end
 
   def check_mode_change

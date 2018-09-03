@@ -12,6 +12,11 @@ module RedmineIssueProgress
       module InstanceMethods
         def initialize_available_filters_with_calculation_type
           initialize_available_filters_without_calculation_type
+          add_available_filter 'time_overrun',
+                               type: :list,
+                               values: [[l(:label_yes), 'true'],
+                                        [l(:label_no), 'false']],
+                               label: :label_records_with_time_overrun
 
           return unless project && project.module_enabled?(:issue_progress)
           add_available_filter 'calculation_type',
@@ -44,6 +49,32 @@ module RedmineIssueProgress
           when 'manual'
             "#{Issue.table_name}.done_ratio_calculation_type #{manual_op} (" \
               "#{manual_modes.join(', ')})"
+          when 'all'
+            '1=1'
+          end
+        end
+
+        def sql_for_time_overrun_field(_field, operator, value)
+          val = value.size > 1 ? 'all' : value.first
+
+          true_op, false_op =
+            if operator == '='
+              ['>', '<=']
+            else
+              ['<=', '>']
+            end
+
+          case val
+          when 'true'
+            'COALESCE(' \
+              "(SELECT SUM(#{TimeEntry.table_name}.hours) FROM #{TimeEntry.table_name} " \
+                "WHERE #{TimeEntry.table_name}.issue_id = #{Issue.table_name}.id), 0)" \
+            "#{true_op} COALESCE(#{Issue.table_name}.estimated_hours, 0)"
+          when 'false'
+            'COALESCE(' \
+              "(SELECT SUM(#{TimeEntry.table_name}.hours) FROM #{TimeEntry.table_name} " \
+                "WHERE #{TimeEntry.table_name}.issue_id = #{Issue.table_name}.id), 0)" \
+            "#{false_op} COALESCE(#{Issue.table_name}.estimated_hours, 0)"
           when 'all'
             '1=1'
           end
