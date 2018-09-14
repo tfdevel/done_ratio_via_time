@@ -27,3 +27,5 @@ en:
   label_records_with_time_overrun: Records with time overrun
   label_yes: 'Yes'
   label_no: 'No'
+  label_disable_manual_mode_for_trackers: Deny manual mode for next trackers
+  error_manual_mode_is_restricted: Manual mode is forbidden for current tracker

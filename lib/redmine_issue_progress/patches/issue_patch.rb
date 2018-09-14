@@ -40,6 +40,7 @@ module RedmineIssueProgress
 
           validates_inclusion_of :done_ratio_calculation_type,
                                  in: Issue::DONE_RATIO_CALCULATION_TYPES.keys
+          validate :manual_calculation_type_allowed?
 
           after_save :update_issue_done_ratio
 
@@ -116,6 +117,16 @@ module RedmineIssueProgress
           update_column(:done_ratio, CalculateDoneRatio.call(self))
           current_issue_journal.save
           UpdateParentsDoneRatio.call(self)
+        end
+
+        def manual_calculation_type_allowed?
+          return unless Issue.done_ratio_calculation_type_transformed(self) ==
+                        Issue::CALCULATION_TYPE_MANUAL && tracker_id
+          if IssueProgressSetup.settings[:global][:trackers_with_disabled_manual_mode]
+                               .to_a
+                               .include?(tracker_id.to_s)
+            errors.add :base, l(:error_manual_mode_is_restricted)
+          end
         end
       end
     end

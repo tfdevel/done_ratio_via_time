@@ -11,13 +11,21 @@
       <span class="check_box_group">
         <%= f.collection_radio_buttons :done_ratio_calculation_type, Issue::DONE_RATIO_CALCULATION_TYPES.map { |num, label| [num, l(label)] }, :first, :second do |b| %>
           <%
+            is_disabled = b.object.first == Issue::CALCULATION_TYPE_MANUAL && IssueProgressSetup.settings[:global][:trackers_with_disabled_manual_mode].to_a.include?(issue.tracker_id.to_s)
             label_params = if IssueProgressSetup.default_calculation_type(issue.project).eql?(b.object.first)
               { style: 'font-weight:bold;', :"data-is-default" => true }
             else
               {}
             end
+            if is_disabled
+              if label_params[:style]
+                label_params[:style] += ' color:grey;'
+              else
+                label_params[:style] = 'color:grey;'
+              end
+            end
           %>
-          <% b.label(label_params) { b.radio_button + b.text } %>
+          <% b.label(label_params) { (is_disabled ? b.radio_button(disabled: true) : b.radio_button) + b.text } %>
         <% end %>
       </span>
     </p>

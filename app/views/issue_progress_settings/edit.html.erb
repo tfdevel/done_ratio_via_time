@@ -4,7 +4,7 @@
     <p>
       <label><%=l(:default_done_ratio_calculation_type)%></label>
       <span class="check_box_group">
-        <% Issue::DONE_RATIO_CALCULATION_TYPES.except(Issue::CALCULATION_TYPE_DEFAULT).each do |k, v| %>
+        <% Issue::DONE_RATIO_CALCULATION_TYPES.except(Issue::CALCULATION_TYPE_DEFAULT, Issue::CALCULATION_TYPE_MANUAL).each do |k, v| %>
           <label>
             <%= radio_button_tag 'settings[done_ratio_calculation_type]', k, @settings[:done_ratio_calculation_type].eql?(k.to_s) %>
             <%= l(v) %>
@@ -17,6 +17,11 @@
     <p>
       <label><%=l(:label_enable_time_overrun)%></label>
       <%= check_box_tag 'settings[enable_time_overrun]', 'true', @settings[:enable_time_overrun] %>
+    </p>
+
+    <p>
+      <label><%=l(:label_disable_manual_mode_for_trackers)%></label>
+      <%= select_tag 'settings[trackers_with_disabled_manual_mode]', options_from_collection_for_select(Tracker.sorted, :id, :name, @settings[:trackers_with_disabled_manual_mode]), multiple: true %>
     </p>
     <%= submit_tag l(:button_apply), :class => "small", :name => nil %>
   <% end %>
