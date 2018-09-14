@@ -2,8 +2,15 @@
   <p>
     <label><%=l(:default_project_done_ratio_calculation_type)%></label>
     <span class="check_box_group">
-      <%= form.collection_radio_buttons :default_done_ratio_calculation_type, Issue::DONE_RATIO_CALCULATION_TYPES.except(Issue::CALCULATION_TYPE_DEFAULT, Issue::CALCULATION_TYPE_MANUAL).map { |num, label| [num, l(label)] }, :first, :second do |b| %>
-        <% b.label { b.radio_button + b.text } %>
+      <%= form.collection_radio_buttons :default_done_ratio_calculation_type, { '' => :label_global_value }.merge(Issue::DONE_RATIO_CALCULATION_TYPES.except(Issue::CALCULATION_TYPE_DEFAULT, Issue::CALCULATION_TYPE_MANUAL)).map { |num, label| [num, l(label)] }, :first, :second do |b| %>
+        <%
+          label_params = if IssueProgressSetup.default_calculation_type(nil).eql?(b.object.first)
+            { style: 'font-weight:bold;' }
+          else
+            {}
+          end
+        %>
+        <% b.label(label_params) { b.radio_button + b.text } %>
       <% end %>
     </span>
     <%= render 'shared/job_status_indicator' %>

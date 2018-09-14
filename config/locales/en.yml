@@ -29,3 +29,4 @@ en:
   label_no: 'No'
   label_disable_manual_mode_for_trackers: Deny manual mode for next trackers
   error_manual_mode_is_restricted: Manual mode is forbidden for current tracker
+  label_global_value: global value

@@ -29,3 +29,4 @@ ru:
   label_no: Нет
   label_disable_manual_mode_for_trackers: Запретить ручное изменение прогресса для следующих трекеров
   error_manual_mode_is_restricted: Ручной режим запрещён для данного трекера
+  label_global_value: глобальное значение
