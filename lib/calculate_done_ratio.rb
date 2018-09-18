@@ -39,7 +39,7 @@ class CalculateDoneRatio
       when Issue::CALCULATION_TYPE_FULL
         done_ratio_full_values(issue, ids)
       when Issue::CALCULATION_TYPE_MANUAL
-        done_ratio_self_values(issue)
+        done_ratio_full_values(issue, ids)
       end
 
     if time_params.present?
@@ -67,7 +67,7 @@ class CalculateDoneRatio
   end
 
   def ratios_sum(arr)
-    arr.reject { |e| e[0].zero? || e[1].zero? }
+    arr.reject { |e| e[1].zero? }
        .transpose.map { |e| e.reduce(:+) }
   end
 

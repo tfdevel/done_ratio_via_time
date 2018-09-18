@@ -46,6 +46,7 @@ module RedmineIssueProgress
 
           skip_callback :save, :before, :update_done_ratio_from_issue_status,
                         if: -> { project.try(:module_enabled?, :issue_progress) }
+          validate :hours_overrun
         end
       end
 
@@ -69,6 +70,20 @@ module RedmineIssueProgress
       end
 
       module InstanceMethods
+        def hours_overrun
+          return unless persisted? &&
+                        IssueProgressSetup.settings[:global][:enable_time_overrun] == 'true' &&
+                        time_entries.all?(&:persisted?)
+
+          if estimated_hours.present?
+            if time_entries.map(&:hours).sum > estimated_hours
+              errors.add :base, l(:error_max_spent_time)
+            end
+          else
+            errors.add :base, l(:error_issue_not_estimated)
+          end
+        end
+
         def done_ratio_derived_with_auto_calculation?
           !project.try(:module_enabled?, :issue_progress)
         end
