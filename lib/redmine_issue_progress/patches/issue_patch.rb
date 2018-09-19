@@ -41,12 +41,13 @@ module RedmineIssueProgress
           validates_inclusion_of :done_ratio_calculation_type,
                                  in: Issue::DONE_RATIO_CALCULATION_TYPES.keys
           validate :manual_calculation_type_allowed?
+          validate :hours_overrun
 
+          before_save :set_changes # fix for redmine 3.3.x
           after_save :update_issue_done_ratio
 
           skip_callback :save, :before, :update_done_ratio_from_issue_status,
                         if: -> { project.try(:module_enabled?, :issue_progress) }
-          validate :hours_overrun
         end
       end
 
@@ -118,11 +119,15 @@ module RedmineIssueProgress
           end
         end
 
+        def set_changes
+          @changes_for_recalculation = changes.slice(:estimated_hours,
+                                                     :done_ratio_calculation_type,
+                                                     :parent_id)
+        end
+
         def update_issue_done_ratio
           return unless project.try(:module_enabled?, :issue_progress) &&
-                        (estimated_hours_changed? ||
-                          done_ratio_calculation_type_changed? ||
-                          parent_id_changed?)
+                        @changes_for_recalculation.present?
 
           set_calculated_done_ratio
         end

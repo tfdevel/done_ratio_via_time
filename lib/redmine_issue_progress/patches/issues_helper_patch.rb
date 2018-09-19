@@ -5,8 +5,10 @@ module RedmineIssueProgress
       def self.included(base)
         base.send(:include, InstanceMethods)
         base.class_eval do
+          define_method(:render_issue_relations) {} unless base.method_defined?(:render_issue_relations)
+
           alias_method_chain :show_detail, :done_ratio_calculation_type
-          alias_method_chain :render_issue_relations, :custom_delete_link
+          alias_method_chain(:render_issue_relations, :custom_delete_link)
         end
       end
 

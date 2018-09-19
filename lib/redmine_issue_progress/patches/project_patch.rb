@@ -6,14 +6,14 @@ module RedmineIssueProgress
         base.send(:include, InstanceMethods)
         base.class_eval do
           safe_attributes 'default_done_ratio_calculation_type'
-          after_save :recalculate_issues_done_ratio,
-                     if: :default_done_ratio_calculation_type_changed?
+          after_commit :recalculate_issues_done_ratio
         end
       end
     end
 
     module InstanceMethods
       def recalculate_issues_done_ratio
+        return unless previous_changes.key?(:default_done_ratio_calculation_type)
         job_id = IssueDoneRatioRecalculationWorker.perform_async(project_id: id)
         IssueProgressSetup.setting[:job_id] = job_id
       end

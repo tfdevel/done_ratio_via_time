@@ -5,6 +5,7 @@ module RedmineIssueProgress
         base.send(:include, InstanceMethods)
         base.class_eval do
           unloadable
+          helper :issues
           before_action :find_optional_issue, only: :destroy
         end
       end
