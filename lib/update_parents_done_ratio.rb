@@ -25,7 +25,12 @@ class UpdateParentsDoneRatio
                                  .where(relation_type:
                                    IssueRelation::TYPE_INCLUDE_TIME_FROM)
                                  .select(:issue_from_id)).to_a
-    parent = issue.parent
+    parent =
+      if issue.parent_id
+        issue.parent
+      elsif issue.parent_id_was
+        Issue.find_by_id(issue.parent_id_was)
+      end
 
     issues_from_relations.each do |e|
       update_linked(e)

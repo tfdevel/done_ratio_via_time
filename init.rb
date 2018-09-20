@@ -15,7 +15,7 @@ Redmine::Plugin.register :done_ratio_via_time do
   name 'Done ratio via time plugin'
   author '//twinslash'
   description 'This is a plugin for Redmine'
-  version '2.0.0'
+  version '2.0.1'
   url 'https://github.com/tfdevel/done_ratio_via_time'
   author_url 'https://twinslash.com'
 
