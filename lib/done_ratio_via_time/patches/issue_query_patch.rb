@@ -1,4 +1,4 @@
-module RedmineIssueProgress
+module DoneRatioViaTime
   module Patches
     # calculation type filter for issues
     module IssueQueryPatch
@@ -29,7 +29,7 @@ module RedmineIssueProgress
         def sql_for_calculation_type_field(_field, operator, value)
           manual_modes = [Issue::CALCULATION_TYPE_MANUAL]
           if Issue::CALCULATION_TYPE_MANUAL ==
-             IssueProgressSetup.default_calculation_type(project)
+             DoneRatioSetup.default_calculation_type(project)
             manual_modes << Issue::CALCULATION_TYPE_DEFAULT
           end
 
@@ -85,6 +85,6 @@ module RedmineIssueProgress
 end
 
 unless IssueQuery.included_modules
-                 .include?(RedmineIssueProgress::Patches::IssueQueryPatch)
-  IssueQuery.send(:include, RedmineIssueProgress::Patches::IssueQueryPatch)
+                 .include?(DoneRatioViaTime::Patches::IssueQueryPatch)
+  IssueQuery.send(:include, DoneRatioViaTime::Patches::IssueQueryPatch)
 end

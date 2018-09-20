@@ -1,16 +1,16 @@
-require 'redmine_issue_progress'
+require 'done_ratio_via_time'
 
-Redmine::Plugin.register :redmine_issue_progress do
-  name 'Redmine Issue Progress plugin'
+Redmine::Plugin.register :done_ratio_via_time do
+  name 'Done ratio via time plugin'
   author '//twinslash'
   description 'This is a plugin for Redmine'
-  version '1.0.0'
-  url 'http://example.com/path/to/plugin'
-  author_url 'http://example.com/about'
+  version '2.0.0'
+  url 'https://github.com/tfdevel/done_ratio_via_time'
+  author_url 'https://twinslash.com'
 
-  menu :admin_menu, :issue_progress, { controller: 'issue_progress_settings',
+  menu :admin_menu, :issue_progress, { controller: 'done_ratio_via_time_settings',
                                        action: 'edit' },
-       caption: :label_issue_progress_section,
+       caption: :label_done_ratio_via_time_section,
        html: { class: 'icon icon-package' }
   settings default: { global: { done_ratio_calculation_type: '1' },
                       job_id: nil,
@@ -19,7 +19,6 @@ Redmine::Plugin.register :redmine_issue_progress do
                       trackers_with_disabled_manual_mode: [] }
 
   project_module :issue_progress do
-    permission :view_done_ratio_calculation_type, {}
     permission :edit_done_ratio_calculation_type, job_statuses: [:index]
   end
 end

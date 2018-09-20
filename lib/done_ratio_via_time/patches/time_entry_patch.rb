@@ -1,4 +1,4 @@
-module RedmineIssueProgress
+module DoneRatioViaTime
   module Patches
     module TimeEntryPatch
       def self.included(base)
@@ -24,7 +24,7 @@ module RedmineIssueProgress
 
         def hours_overrun
           return unless issue &&
-                        IssueProgressSetup.settings[:global][:enable_time_overrun] == 'true'
+                        DoneRatioSetup.settings[:global][:enable_time_overrun] == 'true'
 
           if issue.estimated_hours.present?
             if ([self] + issue.time_entries).uniq.map(&:hours).sum > issue.estimated_hours
@@ -40,6 +40,6 @@ module RedmineIssueProgress
 end
 
 unless TimeEntry.included_modules
-                .include?(RedmineIssueProgress::Patches::TimeEntryPatch)
-  TimeEntry.send(:include, RedmineIssueProgress::Patches::TimeEntryPatch)
+                .include?(DoneRatioViaTime::Patches::TimeEntryPatch)
+  TimeEntry.send(:include, DoneRatioViaTime::Patches::TimeEntryPatch)
 end

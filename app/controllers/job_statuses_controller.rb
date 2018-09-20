@@ -2,7 +2,7 @@ class JobStatusesController < ApplicationController
   before_action :authorize_global
 
   def index
-    last_job_id = IssueProgressSetup.settings[:job_id]
+    last_job_id = DoneRatioSetup.settings[:job_id]
 
     result =
       if last_job_id.present?
@@ -16,7 +16,7 @@ class JobStatusesController < ApplicationController
           :failed
         end
       end
-    time = IssueProgressSetup.settings[:job_successful_complete_at]
+    time = DoneRatioSetup.settings[:job_successful_complete_at]
     render json: { status: result,
                    job_successful_complete_at: format_time(time) }
   end

@@ -1,4 +1,4 @@
-module RedmineIssueProgress
+module DoneRatioViaTime
   module Patches
     # default_done_ratio_calculation_type attribute
     module ProjectPatch
@@ -15,13 +15,13 @@ module RedmineIssueProgress
       def recalculate_issues_done_ratio
         return unless previous_changes.key?(:default_done_ratio_calculation_type)
         job_id = IssueDoneRatioRecalculationWorker.perform_async(project_id: id)
-        IssueProgressSetup.setting[:job_id] = job_id
+        DoneRatioSetup.setting[:job_id] = job_id
       end
     end
   end
 end
 
 unless Project.included_modules
-              .include?(RedmineIssueProgress::Patches::ProjectPatch)
-  Project.send(:include, RedmineIssueProgress::Patches::ProjectPatch)
+              .include?(DoneRatioViaTime::Patches::ProjectPatch)
+  Project.send(:include, DoneRatioViaTime::Patches::ProjectPatch)
 end

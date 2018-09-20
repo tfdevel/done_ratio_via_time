@@ -1,22 +1,22 @@
-class IssueProgressSettingsController < ApplicationController
+class DoneRatioViaTimeSettingsController < ApplicationController
   before_action :require_admin
 
   def edit
-    @settings = IssueProgressSetup.settings[:global]
+    @settings = DoneRatioSetup.settings[:global]
   end
 
   def update
     new_done_ratio_calculation_type =
       settings_params[:done_ratio_calculation_type]
     if new_done_ratio_calculation_type.present? &&
-       IssueProgressSetup.settings[:global][:done_ratio_calculation_type] !=
+       DoneRatioSetup.settings[:global][:done_ratio_calculation_type] !=
        new_done_ratio_calculation_type
       is_recalculation_required = true
     end
-    IssueProgressSetup.setting[:global] = settings_params
+    DoneRatioSetup.setting[:global] = settings_params
     flash[:notice] = l(:notice_successful_update)
     if is_recalculation_required
-      IssueProgressSetup.setting[:job_id] =
+      DoneRatioSetup.setting[:job_id] =
         IssueDoneRatioRecalculationWorker.perform_async
     end
     redirect_to action: :edit

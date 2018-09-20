@@ -1,4 +1,4 @@
-module RedmineIssueProgress
+module DoneRatioViaTime
   module Patches
     # Show calculation mode name in issue history
     module IssuesHelperPatch
@@ -65,6 +65,6 @@ module RedmineIssueProgress
 end
 
 unless IssuesHelper.included_modules
-                   .include?(RedmineIssueProgress::Patches::IssuesHelperPatch)
-  IssuesHelper.send(:include, RedmineIssueProgress::Patches::IssuesHelperPatch)
+                   .include?(DoneRatioViaTime::Patches::IssuesHelperPatch)
+  IssuesHelper.send(:include, DoneRatioViaTime::Patches::IssuesHelperPatch)
 end

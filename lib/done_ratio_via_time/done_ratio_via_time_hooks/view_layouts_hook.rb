@@ -1,8 +1,8 @@
-module RedmineIssueProgress
+module DoneRatioViaTime
   module Hooks
     class ViewsLayoutsHook < Redmine::Hook::ViewListener
       def view_layouts_base_html_head(context = {})
-        stylesheet_link_tag(:issue_progress, plugin: 'redmine_issue_progress')
+        stylesheet_link_tag(:issue_progress, plugin: 'done_ratio_via_time')
       end
     end
   end

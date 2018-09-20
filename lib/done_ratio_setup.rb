@@ -1,6 +1,6 @@
 require 'singleton'
 
-module IssueProgressSetup
+module DoneRatioSetup
   class SettingsProxy
     include Singleton
 
@@ -14,7 +14,7 @@ module IssueProgressSetup
         end
         settings = safe_load
         settings[key] = value
-        Setting.plugin_redmine_issue_progress = settings
+        Setting.plugin_done_ratio_via_time = settings
         if Redmine::Database.mysql?
           ActiveRecord::Base.connection.execute('UNLOCK TABLES')
         end
@@ -33,7 +33,7 @@ module IssueProgressSetup
       # At the first migration, the settings table will not exist
       return {} unless Setting.table_exists?
 
-      settings = Setting.plugin_redmine_issue_progress.dup
+      settings = Setting.plugin_done_ratio_via_time.dup
       if settings.is_a?(String)
         Rails.logger.error 'Unable to load settings'
         return {}

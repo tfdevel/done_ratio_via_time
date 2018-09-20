@@ -21,6 +21,6 @@ class IssueDoneRatioRecalculationWorker
     issues.find_each do |issue|
       issue.set_calculated_done_ratio
     end
-    IssueProgressSetup.setting[:job_successful_complete_at] = Time.now
+    DoneRatioSetup.setting[:job_successful_complete_at] = Time.now
   end
 end

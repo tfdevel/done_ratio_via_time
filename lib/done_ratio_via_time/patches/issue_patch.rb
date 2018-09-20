@@ -1,4 +1,4 @@
-module RedmineIssueProgress
+module DoneRatioViaTime
   module Patches
     # Types, patches for done ratio calculations
     module IssuePatch
@@ -59,7 +59,7 @@ module RedmineIssueProgress
         def done_ratio_calculation_type_transformed(issue)
           if issue.done_ratio_calculation_type ==
              Issue::CALCULATION_TYPE_DEFAULT
-            IssueProgressSetup.default_calculation_type(issue.project)
+            DoneRatioSetup.default_calculation_type(issue.project)
           else
             issue.done_ratio_calculation_type
           end
@@ -73,7 +73,7 @@ module RedmineIssueProgress
       module InstanceMethods
         def hours_overrun
           return unless persisted? &&
-                        IssueProgressSetup.settings[:global][:enable_time_overrun] == 'true' &&
+                        DoneRatioSetup.settings[:global][:enable_time_overrun] == 'true' &&
                         time_entries.all?(&:persisted?)
 
           if estimated_hours.present?
@@ -97,7 +97,7 @@ module RedmineIssueProgress
                 new_done_ratio_calculation_type.to_i
               res =
                 if new_done_ratio_calculation_type == Issue::CALCULATION_TYPE_DEFAULT
-                  IssueProgressSetup.default_calculation_type(project)
+                  DoneRatioSetup.default_calculation_type(project)
                 else
                   new_done_ratio_calculation_type
                 end
@@ -142,7 +142,7 @@ module RedmineIssueProgress
         def manual_calculation_type_allowed?
           return unless Issue.done_ratio_calculation_type_transformed(self) ==
                         Issue::CALCULATION_TYPE_MANUAL && tracker_id
-          if IssueProgressSetup.settings[:global][:trackers_with_disabled_manual_mode]
+          if DoneRatioSetup.settings[:global][:trackers_with_disabled_manual_mode]
                                .to_a
                                .include?(tracker_id.to_s)
             errors.add :base, l(:error_manual_mode_is_restricted)
@@ -154,6 +154,6 @@ module RedmineIssueProgress
 end
 
 unless Issue.included_modules
-            .include?(RedmineIssueProgress::Patches::IssuePatch)
-  Issue.send(:include, RedmineIssueProgress::Patches::IssuePatch)
+            .include?(DoneRatioViaTime::Patches::IssuePatch)
+  Issue.send(:include, DoneRatioViaTime::Patches::IssuePatch)
 end

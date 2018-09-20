@@ -1,4 +1,4 @@
-module RedmineIssueProgress
+module DoneRatioViaTime
   module Patches
     module IssueRelationsControllerPatch
       def self.included(base)
@@ -25,9 +25,9 @@ end
 
 unless IssueRelationsController
        .included_modules
-       .include?(RedmineIssueProgress::Patches::IssueRelationsControllerPatch)
+       .include?(DoneRatioViaTime::Patches::IssueRelationsControllerPatch)
   IssueRelationsController.send(
     :include,
-    RedmineIssueProgress::Patches::IssueRelationsControllerPatch
+    DoneRatioViaTime::Patches::IssueRelationsControllerPatch
   )
 end

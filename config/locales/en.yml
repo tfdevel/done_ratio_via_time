@@ -11,9 +11,8 @@ en:
   calculation_type_linked: linked
   calculation_type_self_and_descendants: self and descendants
   calculation_type_full: all
-  label_issue_progress_section: Done ratio calculating
+  label_done_ratio_via_time_section: Done ratio calculating
   project_module_issue_progress: Done ratio calculating
-  permission_view_done_ratio_calculation_type: View done ratio calculation type
   permission_edit_done_ratio_calculation_type: Edit done ratio calculation type
   label_mode_auto: auto
   label_mode_manual: manual

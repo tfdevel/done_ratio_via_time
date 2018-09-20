@@ -1,4 +1,4 @@
-module RedmineIssueProgress
+module DoneRatioViaTime
   module Patches
     # Add new issue relation type
     module IssueRelationPatch
@@ -55,7 +55,7 @@ module RedmineIssueProgress
 end
 
 unless IssueRelation.included_modules
-                    .include?(RedmineIssueProgress::Patches::IssueRelationPatch)
+                    .include?(DoneRatioViaTime::Patches::IssueRelationPatch)
   IssueRelation.send(:include,
-                     RedmineIssueProgress::Patches::IssueRelationPatch)
+                     DoneRatioViaTime::Patches::IssueRelationPatch)
 end

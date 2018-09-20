@@ -11,10 +11,10 @@
       <span class="check_box_group">
         <%= f.collection_radio_buttons :done_ratio_calculation_type, Issue::DONE_RATIO_CALCULATION_TYPES.map { |num, label| [num, l(label)] }, :first, :second do |b| %>
           <%
-            default_mode = IssueProgressSetup.default_calculation_type(issue.project)
+            default_mode = DoneRatioSetup.default_calculation_type(issue.project)
 
             is_disabled =
-              if IssueProgressSetup.settings[:global][:trackers_with_disabled_manual_mode].to_a.include?(issue.tracker_id.to_s)
+              if DoneRatioSetup.settings[:global][:trackers_with_disabled_manual_mode].to_a.include?(issue.tracker_id.to_s)
                 if b.object.first == Issue::CALCULATION_TYPE_DEFAULT
                   true if default_mode == Issue::CALCULATION_TYPE_MANUAL
                 elsif b.object.first == Issue::CALCULATION_TYPE_MANUAL
