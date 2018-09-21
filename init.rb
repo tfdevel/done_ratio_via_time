@@ -13,11 +13,11 @@ require 'done_ratio_via_time'
 
 Redmine::Plugin.register :done_ratio_via_time do
   name 'Done ratio via time plugin'
-  author '//twinslash'
+  author 'Tecforce'
   description 'This is a plugin for Redmine'
-  version '2.0.1'
+  version '1.0.0'
   url 'https://github.com/tfdevel/done_ratio_via_time'
-  author_url 'https://twinslash.com'
+  author_url 'http://tecforce.ru'
 
   menu :admin_menu, :issue_progress, { controller: 'done_ratio_via_time_settings',
                                        action: 'edit' },
