@@ -12,6 +12,7 @@
 require File.expand_path('../../test_helper', __FILE__)
 
 class IssueTest < ActiveSupport::TestCase
+  self.use_transactional_fixtures = false
   fixtures :projects,
            :users,
            :roles,
