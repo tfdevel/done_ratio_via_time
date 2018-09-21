@@ -1,8 +1,8 @@
 # Copyright (C) 2018 Tecforce - All rights reserved.
 
-# This file is part of “Done ration via time plugin”.
+# This file is part of “Done ratio via time plugin”.
 
-# “Done ration via time plugin” or its sources can not be copied and/or
+# “Done ratio via time plugin” or its sources can not be copied and/or
 # distributed without the express permission of Tecforce. Unauthorized copying
 # of this file, via any media, is strictly prohibited.
 
@@ -27,14 +27,14 @@ ru:
   permission_edit_done_ratio_calculation_type: Редактирование метода расчёта готовности
   label_mode_auto: авто
   label_mode_manual: вручную
-  label_last_recalculation_was: последняя успешная рекалькуляция была
+  label_last_recalculation_was: Последняя успешная рекалькуляция была
   label_update_complete: Рекалькуляция задач завершена
   label_updating: Рекалькуляция задач
   label_update_error: Ошибка при рекалькуляции задач
   label_enable_time_overrun: Включить режим "запретить перерасход"
   error_max_spent_time: Затраченное время превышает оценку
   error_issue_not_estimated: Задача не оценена
-  label_records_with_time_overrun: Записи с перерасходом времени
+  label_records_with_time_overrun: Тикеты с перерасходом времени
   label_yes: Да
   label_no: Нет
   label_disable_manual_mode_for_trackers: Запретить ручное изменение прогресса для следующих трекеров
