@@ -1,8 +1,8 @@
 # Copyright (C) 2018 Tecforce - All rights reserved.
 
-# This file is part of “Done ration via time plugin”.
+# This file is part of “Done ratio via time plugin”.
 
-# “Done ration via time plugin” or its sources can not be copied and/or
+# “Done ratio via time plugin” or its sources can not be copied and/or
 # distributed without the express permission of Tecforce. Unauthorized copying
 # of this file, via any media, is strictly prohibited.
 
@@ -10,33 +10,33 @@
 # For more details please contact sales@tecforce.ru.
 
 en:
-  label_include_time_from: include time from
-  label_include_time_by: time is included in
-  field_done_ratio_calculation_type: Algorithm for done ratio calculating
-  default_done_ratio_calculation_type: Default algorithm for done ratio calculating for all projects
-  default_project_done_ratio_calculation_type: Default algorithm for done ratio calculating
-  calculation_type_default: use default value
+  label_include_time_from: take time from
+  label_include_time_by: time is taken in
+  field_done_ratio_calculation_type: Done ratio algorithm
+  default_done_ratio_calculation_type: Done ratio default algorithm for all projects
+  default_project_done_ratio_calculation_type: Done ratio default algorithm
+  calculation_type_default: default value
   calculation_type_manual: manual
-  calculation_type_self: self
-  calculation_type_descendants: descendants
-  calculation_type_linked: linked
-  calculation_type_self_and_descendants: self and descendants
+  calculation_type_self: current
+  calculation_type_descendants: child tickets
+  calculation_type_linked: linked tickets
+  calculation_type_self_and_descendants: current and child tickets
   calculation_type_full: all
   label_done_ratio_via_time_section: Done ratio calculating
   project_module_issue_progress: Done ratio calculating
-  permission_edit_done_ratio_calculation_type: Edit done ratio calculation type
+  permission_edit_done_ratio_calculation_type: Edit done ratio calculation algorithm
   label_mode_auto: auto
   label_mode_manual: manual
-  label_last_recalculation_was: last successful recalculation was
+  label_last_recalculation_was: Last successful recalculation at
   label_update_complete: Recalculation completed
-  label_updating: Recalculating issues
-  label_update_error: Error with recalculation
+  label_updating: Recalculation in progress...
+  label_update_error: Recalculation error
   label_enable_time_overrun: Prohibit time overrun
-  error_max_spent_time: Spent hours total is more than estimate
-  error_issue_not_estimated: Issue is not estimated
-  label_records_with_time_overrun: Records with time overrun
+  error_max_spent_time: Spent time exceeds the estimate
+  error_issue_not_estimated: Estimated time cannot be empty
+  label_records_with_time_overrun: Tickets with time overrun
   label_yes: 'Yes'
   label_no: 'No'
-  label_disable_manual_mode_for_trackers: Deny manual mode for next trackers
+  label_disable_manual_mode_for_trackers: Disable manual algorithm for trackers
   error_manual_mode_is_restricted: Manual mode is forbidden for current tracker
-  label_global_value: global value
+  label_global_value: default form plugin settings
