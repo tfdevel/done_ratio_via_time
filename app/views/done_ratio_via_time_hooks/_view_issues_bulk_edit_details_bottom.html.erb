@@ -1,7 +1,7 @@
 <% if defined?(@project) && @project.try(:module_enabled?, :issue_progress) %>
   <% if @safe_attributes.include?("done_ratio_calculation_type") %>
     <p>
-      <label><%=l(:default_done_ratio_calculation_type)%></label>
+      <label><%=l(:field_done_ratio_calculation_type)%></label>
       <span class="check_box_group">
         <% { '' => :label_no_change_option }.merge(Issue::DONE_RATIO_CALCULATION_TYPES).each do |k, v| %>
           <label>

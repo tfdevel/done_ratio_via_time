@@ -1,4 +1,5 @@
 <% if defined?(@project) && @project.try(:module_enabled?, :issue_progress) %>
+  <% is_allowed = User.current.allowed_to?(:edit_done_ratio_calculation_type, @project) %>
   <li class="folder">
     <a href="#" class="submenu"><%= l(:field_done_ratio_calculation_type) %></a>
     <ul>
@@ -10,7 +11,7 @@
                                                         :back_url => @back),
                                 :method => :post,
                                 :selected => (@issue && k == @issue.done_ratio_calculation_type),
-                                :disabled => !@can[:edit] %>
+                                :disabled => !(@can[:edit] && is_allowed) %>
         </li>
       <% end %>
     </ul>
