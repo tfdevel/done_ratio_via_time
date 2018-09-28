@@ -39,4 +39,4 @@ en:
   label_no: 'No'
   label_disable_manual_mode_for_trackers: Disable manual algorithm for trackers
   error_manual_mode_is_restricted: Manual mode is forbidden for current tracker
-  label_global_value: default form plugin settings
+  label_global_value: default from plugin settings
