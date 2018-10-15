@@ -10,8 +10,8 @@
 # For more details please contact sales@tecforce.ru.
 
 ru:
-  label_include_time_from: учитывать время от
-  label_include_time_by: время учитывается в
+  label_include_time_from: Учитывать время от
+  label_include_time_by: Время учитывается в
   field_done_ratio_calculation_type: Алгоритм расчёта готовности
   default_done_ratio_calculation_type: Алгоритм расчёта готовности по умолчанию для всех проектов
   default_project_done_ratio_calculation_type: Алгоритм расчёта готовности по умолчанию
