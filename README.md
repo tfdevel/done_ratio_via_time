@@ -2,13 +2,13 @@
 
 ## About
 
-This plugin allows to compute issue done ratio via estimated/spent time ratio.
+This plugin allows computing issue done ratio via estimated/spent time ratio.
 
 **Goal**
 
-The plugin is useful if you use real work hours for estimated efforts and accurately register spent efforts in hours. In this case estimated and spent hours ratio could show almost real progress of work. And you don’t need to keep it in mind or use Excel to get information of real progress and to show it to a customer.
+The plugin is useful if you use real work hours for estimated efforts and accurately register spent efforts in hours. In this case, estimated and spent hours ratio could show the almost real progress of work. And you don’t need to keep it in mind or use Excel to get information on real progress and to show it to a customer.
 
-For example, if you have estimated work for 40 h and you have already spent 20 h and you have not met any hidden problems and still believe that rest of work would take for 20 h then you are at a middle of work (50% done ratio). If you have found hidden obstacle for implementing this task and now you think that you need 80 h total, then you should set new estimation and issue done ration would be 25%. For automating such cases this plugin was developed.
+For example, if you have estimated work for 40h and you have already spent 20h and you have not met any hidden problems and still believe that rest of work would take for 20h then you are at a middle of work (50% done ratio). If you have found a hidden obstacle for implementing this task and now you think that you need 80h total, then you should set new estimation and issue done ration would be 25%. For automating such cases this plugin was developed.
  
 ## Features
 1. Different computing modes:
@@ -16,17 +16,17 @@ For example, if you have estimated work for 40 h and you have already spent 20 h
   * subtasks - hours from all subtask tree will be used;
   * linked - hours from linked with special relations tasks will be used;
   * this and subtask - this issue and all subtask tree hours;
-  * manual - done ratio could be any value defined by user. But if such issue is in tree then estimated and spent values of this issue will be used as usual independently to what user set for done ratio. This is trick mode for case when you need to show to customer good progress but you know that in real life progress is not so good.
-  * all – hours from current task all subtasks and specially linked tasks are used. When done ratio is being calculated over the tree the plugin goes through entire tree till the leaf issues (no subsequent issues or issue has “only this” mode). It takes estimated hours, spent hours and dividing Spnt/Est. But if issue has no estimated value then it will not be taken into calculation (done ration undefined for this issue) but all other issues (below and above the tree) with estimated value will be used.
-2. Two ways to combine issues for getting overall progress for large task:
+  * manual - done ratio could be any value defined by the user. But if such issue is in a tree then estimated and spent values of this issue will be used as usual independently to what user set for the done ratio. This is a trick mode for the case when you need to show to customer good progress but you know that in real life progress is not so good.
+  * all – hours from current task all subtasks and specially linked tasks are used. When the done ratio is being calculated over the tree the plugin goes through entire tree till the leaf issues (no subsequent issues or issue has “only this” mode). It takes estimated hours, spent hours and dividing Spnt/Est. But if the issue has no estimated value then it will not be taken into the calculation (done ration undefined for this issue) but all other issues (below and above the tree) with estimated value will be used.
+2. Two ways to combine issues for getting overall progress for a large task:
   * Subtasks.
-  * Specially added new link type - “Take time from”/“Time is taken in”.
-3. Prohibit overspent feature. This is helpful if you need to prevent case when spent time is bigger than estimated. If turn this mode ON users will not be able to spend time until change estimated value. And thus, you can control overspending.
-4. Full integration with issues, filters, operation plan, Gantt chart. You could use bulk changes to set calculating mode, get overspent issues
-5. Global settings allowing small customization. You could set global default computing mode and restrict issue type for which manual mode is applicable and turn on/off prohibit overspend mode. Also if you change default value for computing mode it goes through entire database and update issue dune ration according to new mode (so it will take time for large DB).
+  * Specially added new link type - "Take time from" and "Time is taken in".
+3. Prohibit overspent feature. This is helpful if you need to prevent case when the spent time is bigger than estimated. If turn this mode ON users will not be able to spend time until change estimated value. And thus, you can control overspending.
+4. Full integration with issues, filters, operation plan, Gantt chart. You could use bulk changes to set calculating mode, get overspent issues.
+5. Global settings allowing small customization. You could set global default computing mode and restrict issue type for which manual mode is applicable and turn on/off prohibit overspend mode. Also if you change the default value for computing mode it goes through the entire database and update issue dune ration according to new mode (so it will take time for large DB).
 6. Per project appliance. You could customize plugin settings in each project.
 
-**Be careful** after you usage of this plugin you will not be able to return issue done ratio  to values which they have before this plugin
+**Be careful** after you use this plugin you will not be able to return issue done ratio  to values which they have before this plugin.
 
 ## Supported languages
 
