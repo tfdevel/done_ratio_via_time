@@ -16,6 +16,14 @@ class CalculateDoneRatio
       return issue.done_ratio
     end
 
+    if DoneRatioSetup.settings[:global][:statuses_for_hours_alignment]
+                     .to_a.include?(issue.status_id.to_s) &&
+       issue.estimated_hours.to_f == 0 &&
+       ![Issue::CALCULATION_TYPE_DESCENDANTS,
+         Issue::CALCULATION_TYPE_LINKED].include?(done_ratio_calculation_type)
+      return 100
+    end
+
     _, values = time_values(issue)
     done_ratio_result(*values)
   end

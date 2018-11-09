@@ -23,6 +23,11 @@
       <label><%=l(:label_disable_manual_mode_for_trackers)%></label>
       <%= select_tag 'settings[trackers_with_disabled_manual_mode]', options_from_collection_for_select(Tracker.sorted, :id, :name, @settings[:trackers_with_disabled_manual_mode]), multiple: true %>
     </p>
+
+    <p>
+      <label><%=l(:label_statuses_for_hours_alignment)%></label>
+      <%= select_tag 'settings[statuses_for_hours_alignment]', options_from_collection_for_select(IssueStatus.sorted, :id, :name, @settings[:statuses_for_hours_alignment]), multiple: true %>
+    </p>
     <%= submit_tag l(:button_apply), :class => "small", :name => nil %>
   <% end %>
 </div>

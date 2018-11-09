@@ -48,6 +48,7 @@ module DoneRatioViaTime
           validate :hours_overrun
 
           before_save :set_changes # fix for redmine 3.3.x
+          after_save :align_hours
           after_save :update_issue_done_ratio
 
           skip_callback :save, :before, :update_done_ratio_from_issue_status,
@@ -127,11 +128,25 @@ module DoneRatioViaTime
           @changes_for_recalculation = changes.slice(:estimated_hours,
                                                      :done_ratio_calculation_type,
                                                      :parent_id)
+          @status_id_changed = changes[:status_id]
+        end
+
+        def align_hours
+          return unless project.try(:module_enabled?, :issue_progress) &&
+                        @status_id_changed &&
+                        DoneRatioSetup.settings[:global][:statuses_for_hours_alignment]
+                                      .to_a.include?(status_id.to_s)
+
+          current_issue_journal = current_journal || init_journal(User.current)
+          update_column(:estimated_hours, spent_hours)
+          @update_done_ratio_required = true
+          current_issue_journal.save
         end
 
         def update_issue_done_ratio
           return unless project.try(:module_enabled?, :issue_progress) &&
-                        @changes_for_recalculation.present?
+                        (@changes_for_recalculation.present? ||
+                          @update_done_ratio_required)
 
           set_calculated_done_ratio
         end

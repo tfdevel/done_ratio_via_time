@@ -16,11 +16,13 @@ Redmine::Plugin.register :done_ratio_via_time do
                                        action: 'edit' },
        caption: :label_done_ratio_via_time_section,
        html: { class: 'icon icon-package' }
-  settings default: { global: { done_ratio_calculation_type: '1' },
-                      job_id: nil,
+  settings default: { global: { done_ratio_calculation_type: '1',
+                                enable_time_overrun: nil,
+                                trackers_with_disabled_manual_mode: [],
+                                statuses_for_hours_alignment: IssueStatus.where(is_closed: true)
+                                                                         .pluck(:id).map(&:to_s) },
                       job_successful_complete_at: nil,
-                      enable_time_overrun: nil,
-                      trackers_with_disabled_manual_mode: [] }
+                      job_id: nil }
 
   project_module :issue_progress do
     permission :edit_done_ratio_calculation_type, job_statuses: [:index]

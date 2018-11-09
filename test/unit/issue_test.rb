@@ -31,6 +31,10 @@ class IssueTest < ActiveSupport::TestCase
            :queries
 
   def setup
+    Setting.plugin_done_ratio_via_time =
+      { global: { statuses_for_hours_alignment: IssueStatus.where(is_closed: true)
+                                                           .pluck(:id).map(&:to_s),
+                  done_ratio_calculation_type: '1' } }
     @issue = Issue.generate!
     @issue.project.enable_module!(:issue_progress)
     @issue.update_columns(estimated_hours: 4, done_ratio_calculation_type: Issue::CALCULATION_TYPE_MANUAL)
@@ -48,6 +52,13 @@ class IssueTest < ActiveSupport::TestCase
     @issue.safe_attributes = { 'done_ratio' => '56' }
     @issue.save
     assert_equal(56, @issue.done_ratio)
+  end
+
+  test 'close issue with not equal estimate and spent hours' do
+    @issue.update_columns(done_ratio_calculation_type: Issue::CALCULATION_TYPE_SELF)
+    @issue.close!
+    assert_equal(100, @issue.done_ratio)
+    assert_equal(@issue.spent_hours, @issue.estimated_hours)
   end
 
   test 'change done_ratio with any not manual mode' do
