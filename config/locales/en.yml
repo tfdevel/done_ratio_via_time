@@ -3,8 +3,8 @@
 # Website: http://tecforce.ru
 
 en:
-  label_include_time_from: Take time from
-  label_include_time_by: Time is taken in
+  label_include_time_from: take time from
+  label_include_time_by: time is taken in
   field_done_ratio_calculation_type: Done ratio algorithm
   default_done_ratio_calculation_type: Done ratio default algorithm for all projects
   default_project_done_ratio_calculation_type: Done ratio default algorithm
