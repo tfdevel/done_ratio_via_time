@@ -1,5 +1,20 @@
 <% if project.module_enabled?(:issue_progress) %>
   <p>
+    <label><%=l(:label_enable_time_overrun)%></label>
+    <span class="check_box_group">
+      <%= form.collection_radio_buttons :time_overrun_mode, { '' => :label_global_value }.merge(Issue::TIME_OVERRUN_MODES).map { |num, label| [num, l(label).mb_chars.downcase] }, :first, :second do |b| %>
+        <%
+          label_params = if DoneRatioSetup.time_overrun_enabled?(nil).eql?(b.object.first)
+            { style: 'font-weight:bold;' }
+          else
+            {}
+          end
+        %>
+        <% b.label(label_params) { b.radio_button + b.text } %>
+      <% end %>
+    </span>
+  </p>
+  <p>
     <label><%=l(:default_project_done_ratio_calculation_type)%></label>
     <span class="check_box_group">
       <%= form.collection_radio_buttons :default_done_ratio_calculation_type, { '' => :label_global_value }.merge(Issue::DONE_RATIO_CALCULATION_TYPES.except(Issue::CALCULATION_TYPE_DEFAULT)).map { |num, label| [num, l(label)] }, :first, :second do |b| %>

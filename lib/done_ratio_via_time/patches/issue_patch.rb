@@ -42,6 +42,11 @@ module DoneRatioViaTime
             Issue::CALCULATION_TYPE_FULL => :calculation_type_full
           }.freeze
 
+          const_set :TIME_OVERRUN_MODES, {
+            true => :label_yes,
+            false => :label_no
+          }
+
           validates_inclusion_of :done_ratio_calculation_type,
                                  in: Issue::DONE_RATIO_CALCULATION_TYPES.keys
           validate :manual_calculation_type_allowed?
@@ -78,15 +83,14 @@ module DoneRatioViaTime
       module InstanceMethods
         def hours_overrun
           return unless persisted? &&
-                        DoneRatioSetup.settings[:global][:enable_time_overrun] == 'true' &&
+                        project.try(:module_enabled?, :issue_progress) &&
+                        DoneRatioSetup.time_overrun_enabled?(project) &&
                         time_entries.all?(&:persisted?)
 
           if estimated_hours.present?
             if time_entries.map(&:hours).sum > estimated_hours
               errors.add :base, l(:error_max_spent_time)
             end
-          else
-            errors.add :base, l(:error_issue_not_estimated)
           end
         end
 
@@ -139,14 +143,13 @@ module DoneRatioViaTime
 
           current_issue_journal = current_journal || init_journal(User.current)
           update_column(:estimated_hours, spent_hours)
-          @update_done_ratio_required = true
           current_issue_journal.save
         end
 
         def update_issue_done_ratio
           return unless project.try(:module_enabled?, :issue_progress) &&
                         (@changes_for_recalculation.present? ||
-                          @update_done_ratio_required)
+                          @status_id_changed)
 
           set_calculated_done_ratio
         end

@@ -3,6 +3,7 @@
 # Website: http://tecforce.ru
 
 require File.expand_path('../../test_helper', __FILE__)
+require 'sidekiq/testing'
 
 class IssueTest < ActiveSupport::TestCase
   self.use_transactional_fixtures = false
@@ -59,6 +60,21 @@ class IssueTest < ActiveSupport::TestCase
     @issue.close!
     assert_equal(100, @issue.done_ratio)
     assert_equal(@issue.spent_hours, @issue.estimated_hours)
+  end
+
+  test 'reopen issue with zero spent and estimated hours' do
+    @issue.time_entries.destroy_all
+    @issue.update_columns(done_ratio_calculation_type: Issue::CALCULATION_TYPE_SELF,
+                          estimated_hours: nil)
+    @issue.close!
+    assert_equal(100, @issue.done_ratio)
+    assert_equal(0, @issue.estimated_hours)
+    assert_equal(0, @issue.spent_hours)
+    @issue.status = IssueStatus.where(is_closed: false).first
+    @issue.save!
+    assert_equal(0, @issue.done_ratio)
+    assert_equal(0, @issue.estimated_hours)
+    assert_equal(0, @issue.spent_hours)
   end
 
   test 'change done_ratio with any not manual mode' do
