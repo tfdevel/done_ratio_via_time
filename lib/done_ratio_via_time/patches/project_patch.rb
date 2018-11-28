@@ -9,7 +9,7 @@ module DoneRatioViaTime
       def self.included(base)
         base.send(:include, InstanceMethods)
         base.class_eval do
-          safe_attributes 'default_done_ratio_calculation_type'
+          safe_attributes 'default_done_ratio_calculation_type', 'time_overrun_mode'
           after_commit :recalculate_issues_done_ratio
         end
       end

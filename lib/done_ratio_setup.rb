@@ -64,4 +64,13 @@ module DoneRatioSetup
     end
   end
   module_function :default_calculation_type
+
+  def time_overrun_enabled?(project)
+    if project && !project.time_overrun_mode.nil?
+      project.time_overrun_mode
+    else
+      settings[:global][:enable_time_overrun] == 'true'
+    end
+  end
+  module_function :time_overrun_enabled?
 end

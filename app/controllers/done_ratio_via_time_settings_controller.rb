@@ -31,6 +31,7 @@ class DoneRatioViaTimeSettingsController < ApplicationController
   def settings_params
     params.require(:settings).permit(:done_ratio_calculation_type,
                                      :enable_time_overrun,
-                                     trackers_with_disabled_manual_mode: [])
+                                     trackers_with_disabled_manual_mode: [],
+                                     statuses_for_hours_alignment: [])
   end
 end

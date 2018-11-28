@@ -42,12 +42,18 @@ module DoneRatioViaTime
             Issue::CALCULATION_TYPE_FULL => :calculation_type_full
           }.freeze
 
+          const_set :TIME_OVERRUN_MODES, {
+            true => :label_yes,
+            false => :label_no
+          }
+
           validates_inclusion_of :done_ratio_calculation_type,
                                  in: Issue::DONE_RATIO_CALCULATION_TYPES.keys
           validate :manual_calculation_type_allowed?
           validate :hours_overrun
 
           before_save :set_changes # fix for redmine 3.3.x
+          after_save :align_hours
           after_save :update_issue_done_ratio
 
           skip_callback :save, :before, :update_done_ratio_from_issue_status,
@@ -77,15 +83,14 @@ module DoneRatioViaTime
       module InstanceMethods
         def hours_overrun
           return unless persisted? &&
-                        DoneRatioSetup.settings[:global][:enable_time_overrun] == 'true' &&
+                        project.try(:module_enabled?, :issue_progress) &&
+                        DoneRatioSetup.time_overrun_enabled?(project) &&
                         time_entries.all?(&:persisted?)
 
           if estimated_hours.present?
             if time_entries.map(&:hours).sum > estimated_hours
               errors.add :base, l(:error_max_spent_time)
             end
-          else
-            errors.add :base, l(:error_issue_not_estimated)
           end
         end
 
@@ -127,11 +132,24 @@ module DoneRatioViaTime
           @changes_for_recalculation = changes.slice(:estimated_hours,
                                                      :done_ratio_calculation_type,
                                                      :parent_id)
+          @status_id_changed = changes[:status_id]
+        end
+
+        def align_hours
+          return unless project.try(:module_enabled?, :issue_progress) &&
+                        @status_id_changed &&
+                        DoneRatioSetup.settings[:global][:statuses_for_hours_alignment]
+                                      .to_a.include?(status_id.to_s)
+
+          current_issue_journal = current_journal || init_journal(User.current)
+          update_column(:estimated_hours, spent_hours)
+          current_issue_journal.save
         end
 
         def update_issue_done_ratio
           return unless project.try(:module_enabled?, :issue_progress) &&
-                        @changes_for_recalculation.present?
+                        (@changes_for_recalculation.present? ||
+                          @status_id_changed)
 
           set_calculated_done_ratio
         end

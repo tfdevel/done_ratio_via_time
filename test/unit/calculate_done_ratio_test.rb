@@ -30,11 +30,24 @@ class CalculateDoneRatioTest < ActiveSupport::TestCase
            :queries
 
   def setup
+    Setting.plugin_done_ratio_via_time =
+      { global: { statuses_for_hours_alignment: IssueStatus.where(is_closed: true)
+                                                           .pluck(:id).map(&:to_s),
+                  done_ratio_calculation_type: '1' } }
     @issue = Issue.generate!
     @issue.update_columns(estimated_hours: 4,
                           done_ratio_calculation_type: Issue::CALCULATION_TYPE_MANUAL)
     @issue.time_entries.create!(hours: 2, user: User.first, spent_on: Date.current)
     User.current = User.first
+  end
+
+  test 'test without estimate and spent hours' do
+    issue = Issue.generate!
+    issue.close!
+    issue.update(done_ratio: 33)
+    assert_equal(33, CalculateDoneRatio.call(issue))
+    issue.update_column(:done_ratio_calculation_type, Issue::CALCULATION_TYPE_SELF)
+    assert_equal(100, CalculateDoneRatio.call(issue))
   end
 
   test '#done_ratio_self' do

@@ -10,6 +10,7 @@ module DoneRatioViaTime
         base.class_eval do
           validate :hours_overrun
 
+          before_save :set_changes  # fix for redmine 3.3.x
           after_save :update_issue_done_ratio
           after_destroy :update_issue_done_ratio
         end
@@ -20,15 +21,18 @@ module DoneRatioViaTime
           return unless issue && issue.project.try(:module_enabled?,
                                                    :issue_progress)
 
-          issue.init_journal(User.current)
-          issue.done_ratio = CalculateDoneRatio.call(issue)
-          issue.save
-          UpdateParentsDoneRatio.call(issue)
+          if @issue_id_changed
+            i = Issue.find_by_id(@issue_id_changed.first)
+            set_calculated_done_ratio(i) if i
+          end
+
+          set_calculated_done_ratio(issue)
         end
 
         def hours_overrun
           return unless issue &&
-                        DoneRatioSetup.settings[:global][:enable_time_overrun] == 'true'
+                        project.try(:module_enabled?, :issue_progress) &&
+                        DoneRatioSetup.time_overrun_enabled?(project)
 
           if issue.estimated_hours.present?
             if ([self] + issue.time_entries).uniq.map(&:hours).sum > issue.estimated_hours
@@ -37,6 +41,19 @@ module DoneRatioViaTime
           else
             errors.add :base, l(:error_issue_not_estimated)
           end
+        end
+
+        def set_changes
+          @issue_id_changed = changes[:issue_id]
+        end
+
+        private
+
+        def set_calculated_done_ratio(i)
+          i.init_journal(User.current)
+          i.done_ratio = CalculateDoneRatio.call(i)
+          i.save
+          UpdateParentsDoneRatio.call(i)
         end
       end
     end
