@@ -18,6 +18,8 @@ module DoneRatioViaTime
           alias_method_chain :done_ratio_derived?, :auto_calculation
           alias_method_chain :done_ratio, :calculation_type
           alias_method_chain :safe_attributes=, :done_ratio_check
+          alias_method_chain :total_estimated_hours, :relations
+          alias_method_chain :total_spent_hours, :relations
 
           class << self
             alias_method_chain :use_field_for_done_ratio?, :hide_selector_field
@@ -169,6 +171,29 @@ module DoneRatioViaTime
                                .include?(tracker_id.to_s)
             errors.add :base, l(:error_manual_mode_is_restricted)
           end
+        end
+
+        def total_estimated_hours_with_relations
+          estimated_hours_from_relations = issues_with_relation_include_time_from.sum(:estimated_hours)
+          if estimated_hours_from_relations > 0
+            @total_estimated_hours ||= self_and_descendants.sum(:estimated_hours) + estimated_hours_from_relations
+          else
+            total_estimated_hours_without_relations
+          end
+        end
+
+        def total_spent_hours_with_relations
+          spent_hours_from_relations = issues_with_relation_include_time_from.joins(:time_entries).sum("#{TimeEntry.table_name}.hours").to_f
+          if spent_hours_from_relations > 0.0
+            (self_and_descendants.joins(:time_entries).sum("#{TimeEntry.table_name}.hours").to_f + spent_hours_from_relations) || 0.0
+          else
+            total_spent_hours_without_relations
+          end
+        end
+
+        def issues_with_relation_include_time_from
+          Issue.joins(:relations_to).where(issue_relations: {relation_type: 'include_time_from',
+                                                             issue_from_id: self.id})
         end
       end
     end

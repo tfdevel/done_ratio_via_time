@@ -13,6 +13,7 @@ module DoneRatioViaTime
 
           alias_method_chain :show_detail, :done_ratio_calculation_type
           alias_method_chain(:render_issue_relations, :custom_delete_link)
+          alias_method_chain :render_half_width_custom_fields_rows, :primary_assessment
         end
       end
 
@@ -62,6 +63,36 @@ module DoneRatioViaTime
           end
 
           content_tag('table', s, :class => 'list issues odd-even')
+        end
+
+        def render_half_width_custom_fields_rows_with_primary_assessment(issue)
+          if DoneRatioSetup.settings[:global][:primary_assessment]
+            values = issue.visible_custom_field_values.reject {|value| value.custom_field.full_width_layout?}
+            return if values.empty?
+            half = (values.size / 2.0).ceil
+            issue_fields_rows do |rows|
+              values.each_with_index do |value, i|
+                css = "cf_#{value.custom_field.id}"
+                m = (i < half ? :left : :right)
+                primary_assessment_id = DoneRatioSetup.settings[:global][:primary_assessment].to_i
+                custom_field_value =
+                if value.custom_field.id == primary_assessment_id
+                  string = l_hours_short(value.to_s)
+                  issues_ids = issue.self_and_descendants.map(&:id)
+                  issues_from_relation_ids = issue.issues_with_relation_include_time_from.map(&:id)
+                  all_ids = (issues_ids + issues_from_relation_ids).uniq
+                  custom_field_values = CustomValue.where(customized_type: 'Issue', customized_id: all_ids, custom_field_id: primary_assessment_id).map(&:value).map(&:to_f)
+                  string << " (#{l(:label_total)}: #{l_hours_short(custom_field_values.sum)})" if custom_field_values.sum > value.value.to_f
+                  string
+                else
+                  show_value(value)
+                end
+                rows.send m, custom_field_name_tag(value.custom_field), custom_field_value, :class => css
+              end
+            end
+          else
+            render_half_width_custom_fields_rows_without_primary_assessment(issue)
+          end
         end
       end
     end
