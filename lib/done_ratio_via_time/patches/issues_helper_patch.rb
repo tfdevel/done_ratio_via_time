@@ -14,6 +14,7 @@ module DoneRatioViaTime
           alias_method_chain :show_detail, :done_ratio_calculation_type
           alias_method_chain(:render_issue_relations, :custom_delete_link)
           alias_method_chain :render_half_width_custom_fields_rows, :primary_assessment
+          alias_method_chain :issue_spent_hours_details, :zero_value
         end
       end
 
@@ -78,11 +79,7 @@ module DoneRatioViaTime
                 custom_field_value =
                 if value.custom_field.id == primary_assessment_id
                   string = l_hours_short(value.to_s)
-                  issues_ids = issue.self_and_descendants.map(&:id)
-                  issues_from_relation_ids = issue.issues_with_relation_include_time_from.map(&:id)
-                  all_ids = (issues_ids + issues_from_relation_ids).uniq
-                  custom_field_values = CustomValue.where(customized_type: 'Issue', customized_id: all_ids, custom_field_id: primary_assessment_id).map(&:value).map(&:to_f)
-                  string << " (#{l(:label_total)}: #{l_hours_short(custom_field_values.sum)})" if custom_field_values.sum > value.value.to_f
+                  string << " (#{l(:label_total)}: #{l_hours_short(issue.time_values[2])})" if issue.done_ratio_calculation_type != 2 && value.value.to_f > 0
                   string
                 else
                   show_value(value)
@@ -92,6 +89,19 @@ module DoneRatioViaTime
             end
           else
             render_half_width_custom_fields_rows_without_primary_assessment(issue)
+          end
+        end
+
+        def issue_spent_hours_details_with_zero_value(issue)
+          if issue.total_spent_hours
+
+            if issue.total_spent_hours == issue.spent_hours
+              link_to(l_hours_short(issue.spent_hours))
+            else
+              s = issue.spent_hours > 0 ? l_hours_short(issue.spent_hours) : ""
+              s << " (#{l(:label_total)}: #{l_hours_short(issue.total_spent_hours)})"
+              s.html_safe
+            end
           end
         end
       end

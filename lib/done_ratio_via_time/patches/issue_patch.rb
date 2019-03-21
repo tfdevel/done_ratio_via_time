@@ -174,26 +174,25 @@ module DoneRatioViaTime
         end
 
         def total_estimated_hours_with_relations
-          estimated_hours_from_relations = issues_with_relation_include_time_from.sum(:estimated_hours)
-          if estimated_hours_from_relations > 0
-            @total_estimated_hours ||= self_and_descendants.sum(:estimated_hours) + estimated_hours_from_relations
+          if self.done_ratio_calculation_type
+            time_values[1]
           else
             total_estimated_hours_without_relations
           end
         end
 
         def total_spent_hours_with_relations
-          spent_hours_from_relations = issues_with_relation_include_time_from.joins(:time_entries).sum("#{TimeEntry.table_name}.hours").to_f
-          if spent_hours_from_relations > 0.0
-            (self_and_descendants.joins(:time_entries).sum("#{TimeEntry.table_name}.hours").to_f + spent_hours_from_relations) || 0.0
+          # spent_hours_from_relations = issues_with_relation_include_time_from.joins(:time_entries).sum("#{TimeEntry.table_name}.hours").to_f
+          if self.done_ratio_calculation_type
+             time_values[0]
           else
             total_spent_hours_without_relations
           end
         end
 
-        def issues_with_relation_include_time_from
-          Issue.joins(:relations_to).where(issue_relations: {relation_type: 'include_time_from',
-                                                             issue_from_id: self.id})
+        def time_values
+          _, values = CalculateDoneRatio.new.send :time_values, self
+          values
         end
       end
     end
