@@ -67,7 +67,12 @@ class CalculateDoneRatio
     primary_assessment = CustomValue.find_by(customized_type: 'Issue',
                                              customized_id: issue.id,
                                              custom_field_id: primary_assessment_id)
-    custom_value = primary_assessment.value.to_f if primary_assessment
+    custom_value =
+    if primary_assessment
+      primary_assessment.value.to_f
+    else
+      0
+    end
     [spent_hours, issue.estimated_hours.to_f, custom_value]
   end
 

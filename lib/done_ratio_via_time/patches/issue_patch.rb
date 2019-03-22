@@ -194,6 +194,10 @@ module DoneRatioViaTime
           _, values = CalculateDoneRatio.new.send :time_values, self
           values
         end
+
+        def invalid_done_ratio_calculation_type
+          [Issue::CALCULATION_TYPE_MANUAL, Issue::CALCULATION_TYPE_SELF].include? self.done_ratio_calculation_type
+        end
       end
     end
   end
