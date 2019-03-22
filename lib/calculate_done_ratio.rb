@@ -31,7 +31,7 @@ class CalculateDoneRatio
   private
 
   def time_values(issue, ids = [], include_current_time = false)
-    return [ids, [0, 0]] if ids.include?(issue.id)
+    return [ids, [0, 0, 0]] if ids.include?(issue.id)
 
     done_ratio_calculation_type =
       Issue.done_ratio_calculation_type_transformed(issue)
@@ -64,9 +64,13 @@ class CalculateDoneRatio
   def done_ratio_self_values(issue)
     spent_hours = issue.time_entries.sum(:hours) || 0.0
     primary_assessment_id = DoneRatioSetup.settings[:global][:primary_assessment].to_i
-    primary_assessment = CustomValue.find_by(customized_type: 'Issue',
-                                             customized_id: issue.id,
-                                             custom_field_id: primary_assessment_id).value.to_f
+    if primary_assessment_id
+      primary_assessment = CustomValue.find_by(customized_type: 'Issue',
+                                               customized_id: issue.id,
+                                               custom_field_id: primary_assessment_id).value.to_f
+    else
+      primary_assessment = nil
+    end
     [spent_hours, issue.estimated_hours.to_f, primary_assessment]
   end
 
