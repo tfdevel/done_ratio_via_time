@@ -22,6 +22,7 @@ Rails.configuration.to_prepare do
   require 'done_ratio_via_time/patches/issue_query_patch'
   require 'done_ratio_via_time/patches/project_patch'
   require 'done_ratio_via_time/patches/enabled_module_patch'
+  require 'done_ratio_via_time/patches/version_patch'
 
   # hooks
   require 'done_ratio_via_time/done_ratio_via_time_hooks/views_issues_hook'
