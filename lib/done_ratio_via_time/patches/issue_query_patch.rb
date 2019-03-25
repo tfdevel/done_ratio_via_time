@@ -10,6 +10,7 @@ module DoneRatioViaTime
         base.send(:include, InstanceMethods)
         base.class_eval do
           alias_method_chain :initialize_available_filters, :calculation_type
+          alias_method_chain :available_columns, :calculation_type
         end
       end
 
@@ -82,6 +83,41 @@ module DoneRatioViaTime
           when 'all'
             '1=1'
           end
+        end
+
+        def available_columns_with_calculation_type
+          return @available_columns if @available_columns
+          @available_columns = self.class.available_columns.dup
+          @available_columns += issue_custom_fields.visible.collect {|cf| QueryCustomFieldColumn.new(cf) }
+
+          if User.current.allowed_to?(:view_time_entries, project, :global => true)
+            index = @available_columns.find_index {|column| column.name == :total_estimated_hours}
+            index = (index ? index + 1 : -1)
+            # insert the column after total_estimated_hours or at the end
+            @available_columns.insert index, QueryColumn.new(:spent_hours,
+              :sortable => "COALESCE((SELECT SUM(hours) FROM #{TimeEntry.table_name} WHERE #{TimeEntry.table_name}.issue_id = #{Issue.table_name}.id), 0)",
+              :default_order => 'desc',
+              :caption => :label_spent_time,
+              :totalable => true
+            )
+            @available_columns.insert index+1, QueryColumn.new(:total_spent_hours,
+              :sortable => "#{Issue.table_name}.total_spent_hours",
+              :default_order => 'desc',
+              :caption => :label_total_spent_time
+            )
+          end
+
+          if User.current.allowed_to?(:set_issues_private, nil, :global => true) ||
+            User.current.allowed_to?(:set_own_issues_private, nil, :global => true)
+            @available_columns << QueryColumn.new(:is_private, :sortable => "#{Issue.table_name}.is_private", :groupable => true)
+          end
+
+          disabled_fields = Tracker.disabled_core_fields(trackers).map {|field| field.sub(/_id$/, '')}
+          @available_columns.reject! {|column|
+            disabled_fields.include?(column.name.to_s)
+          }
+
+          @available_columns
         end
       end
     end

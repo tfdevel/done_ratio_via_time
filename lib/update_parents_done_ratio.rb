@@ -55,7 +55,9 @@ class UpdateParentsDoneRatio
   def update_issue(issue)
     current_issue_journal =
       issue.current_journal || issue.init_journal(User.current)
-    issue.update_column(:done_ratio, CalculateDoneRatio.call(issue))
+    issue.update_columns(done_ratio: CalculateDoneRatio.call(issue),
+                         total_spent_hours: issue.time_values[0],
+                         total_estimated_hours: issue.time_values[1])
     current_issue_journal.save
   end
 end
