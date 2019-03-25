@@ -11,6 +11,9 @@ module DoneRatioViaTime
         base.class_eval do
           alias_method_chain :initialize_available_filters, :calculation_type
           alias_method_chain :available_columns, :calculation_type
+          self.available_columns << QueryColumn.new(:total_estimated_hours,
+                                                    :sortable => "#{Issue.table_name}.total_estimated_hours",
+                                                    :default_order => 'desc')
         end
       end
 
