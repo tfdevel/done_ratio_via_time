@@ -11,9 +11,6 @@ module DoneRatioViaTime
         base.class_eval do
           alias_method_chain :initialize_available_filters, :calculation_type
           alias_method_chain :available_columns, :calculation_type
-          self.available_columns << QueryColumn.new(:total_estimated_hours,
-                                                    :sortable => "#{Issue.table_name}.total_estimated_hours",
-                                                    :default_order => 'desc')
         end
       end
 
@@ -93,8 +90,12 @@ module DoneRatioViaTime
           @available_columns = self.class.available_columns.dup
           @available_columns += issue_custom_fields.visible.collect {|cf| QueryCustomFieldColumn.new(cf) }
 
+          index = @available_columns.find_index {|column| column.name == :total_estimated_hours}
+          @available_columns[index] = QueryColumn.new(:total_estimated_hours,
+            :sortable => "#{Issue.table_name}.total_estimated_hours",
+            :default_order => 'desc'
+          )
           if User.current.allowed_to?(:view_time_entries, project, :global => true)
-            index = @available_columns.find_index {|column| column.name == :total_estimated_hours}
             index = (index ? index + 1 : -1)
             # insert the column after total_estimated_hours or at the end
             @available_columns.insert index, QueryColumn.new(:spent_hours,
