@@ -177,7 +177,7 @@ module DoneRatioViaTime
 
         def total_estimated_hours_with_relations
           if self.done_ratio_calculation_type
-            time_values[1]
+            self.read_attribute(:total_estimated_hours)
           else
             total_estimated_hours_without_relations
           end
@@ -186,7 +186,7 @@ module DoneRatioViaTime
         def total_spent_hours_with_relations
           # spent_hours_from_relations = issues_with_relation_include_time_from.joins(:time_entries).sum("#{TimeEntry.table_name}.hours").to_f
           if self.done_ratio_calculation_type
-             time_values[0]
+             self.read_attribute(:total_spent_hours)
           else
             total_spent_hours_without_relations
           end

@@ -27,12 +27,13 @@ module DoneRatioViaTime
 
       module InstanceMethods
         def completed_percent_with_new_logic
-          done_ratio_array = Issue.where(fixed_version_id: self.id).map(&:done_ratio)
-          count_of_issues = done_ratio_array.size.to_f
-          if count_of_issues == 0
+          issues = Issue.where(fixed_version_id: self.id)
+          estinated_hours_sum = issues.map(&:estimated_hours).compact.sum
+          spent_hours_sum = TimeEntry.where(issue_id: issues.map(&:id)).map(&:hours).compact.sum
+          if estinated_hours_sum == 0
             0
           else
-            done_ratio_array.sum/count_of_issues
+            100*spent_hours_sum/estinated_hours_sum
           end
         end
 
