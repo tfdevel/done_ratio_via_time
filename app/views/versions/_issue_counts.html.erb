@@ -21,8 +21,8 @@
           <% end %>
         </td>
         <td style="width:240px;">
-            <%= progress_bar((count[:open].to_f / count[:total]),
-                  :legend => "#{count[:open]/count[:total]}%") %>
+            <%= progress_bar(100*(count[:open].to_f / count[:total]),
+                  :legend => "#{(100*(count[:open]/count[:total])).round}%") %>
         </td>
     </tr>
     <% end %>

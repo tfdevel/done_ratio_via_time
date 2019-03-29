@@ -31,10 +31,11 @@ module DoneRatioViaTime
 
           h = Hash.new {|k,v| k[v] = [0, 0]}
           begin
-            version.fixed_issues.group(criteria).count.each do |c,s|
+            issues = version.fixed_issues
+            issues.group(criteria).sum(:estimated_hours).each do |c,s|
               h[c][0] = s
             end
-            version.fixed_issues.group(criteria).sum(:done_ratio).each do |c,s|
+            issues.joins(:time_entries).group(criteria).sum(:hours).each do |c,s|
               h[c][1] = s
             end
           rescue ActiveRecord::RecordNotFound
