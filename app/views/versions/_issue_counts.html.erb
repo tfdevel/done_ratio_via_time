@@ -22,8 +22,8 @@
         </td>
         <td style="width:240px;">
             <% unless count[:total] == 0 %>
-              <%= progress_bar(100*(count[:open].to_f / count[:total]),
-                  :legend => "#{(100*(count[:open]/count[:total])).round}%") %>
+              <%= progress_bar((100*count[:open] / count[:total]).to_i,
+                  :legend => "#{(100*(count[:open]/count[:total])).to_i}%") %>
             <% else %>
               <%= progress_bar(100, :legend => "100%") %>
             <% end %>
