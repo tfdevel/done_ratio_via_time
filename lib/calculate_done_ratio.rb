@@ -89,8 +89,7 @@ class CalculateDoneRatio
   end
 
   def ratios_sum(arr)
-    arr.reject { |e| e[1].zero? }
-       .transpose.map { |e| e.reduce(:+) }
+    arr.transpose.map { |e| e.reduce(:+) }
   end
 
   def done_ratio_descendants_values(issue, ids, include_current_time = false)
