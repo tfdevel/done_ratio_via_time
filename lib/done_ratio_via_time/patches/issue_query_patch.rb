@@ -92,7 +92,7 @@ module DoneRatioViaTime
 
           index = @available_columns.find_index {|column| column.name == :total_estimated_hours}
           @available_columns[index] = QueryColumn.new(:total_estimated_hours,
-            :sortable => "#{Issue.table_name}.total_estimated_hours",
+            :sortable => "#{Issue.table_name}.total_estimated_time",
             :default_order => 'desc'
           )
           if User.current.allowed_to?(:view_time_entries, project, :global => true)
@@ -105,7 +105,7 @@ module DoneRatioViaTime
               :totalable => true
             )
             @available_columns.insert index+1, QueryColumn.new(:total_spent_hours,
-              :sortable => "#{Issue.table_name}.total_spent_hours",
+              :sortable => "#{Issue.table_name}.total_spent_time",
               :default_order => 'desc',
               :caption => :label_total_spent_time
             )

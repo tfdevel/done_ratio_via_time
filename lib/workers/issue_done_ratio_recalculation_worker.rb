@@ -25,12 +25,12 @@ class IssueDoneRatioRecalculationWorker
     issues.find_each do |issue|
       issue.set_calculated_done_ratio
     end
-    issues_with_default_values = Issue.where(total_estimated_hours: nil)
+    issues_with_default_values = Issue.where(total_estimated_time: nil)
     issues_with_default_values.find_each do |issue|
       issue.set_calculated_done_ratio
     end
-    Issue.where(total_spent_hours: nil).each do |issue|
-      issue.total_spent_hours = 0.0
+    Issue.where(total_spent_time: nil).each do |issue|
+      issue.total_spent_time = 0.0
       issue.save
     end
     DoneRatioSetup.setting[:job_successful_complete_at] = Time.now

@@ -94,17 +94,17 @@ module DoneRatioViaTime
         end
 
         def issue_spent_hours_details_with_done_ratio_calculation_type(issue)
-          if issue.total_spent_hours
+          if issue.total_spent_time
             s = issue.spent_hours > 0 ? l_hours_short(issue.spent_hours) : ""
-            s << " (#{l(:label_total)}: #{l_hours_short(issue.total_spent_hours)})" unless issue.invalid_done_ratio_calculation_type
+            s << " (#{l(:label_total)}: #{l_hours_short(issue.total_spent_time)})" unless issue.invalid_done_ratio_calculation_type
             s.html_safe
           end
         end
 
         def issue_estimated_hours_details_with_done_ratio_calculation_type(issue)
-          if issue.total_estimated_hours.present?
+          if issue.total_estimated_time.present?
             s = issue.estimated_hours.present? ? l_hours_short(issue.estimated_hours) : ""
-            s << " (#{l(:label_total)}: #{l_hours_short(issue.total_estimated_hours)})" unless issue.invalid_done_ratio_calculation_type
+            s << " (#{l(:label_total)}: #{l_hours_short(issue.total_estimated_time)})" unless issue.invalid_done_ratio_calculation_type
             s.html_safe
           end
         end

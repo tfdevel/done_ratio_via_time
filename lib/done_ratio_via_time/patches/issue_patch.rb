@@ -159,8 +159,8 @@ module DoneRatioViaTime
         def set_calculated_done_ratio
           current_issue_journal = current_journal || init_journal(User.current)
           update_columns(done_ratio: CalculateDoneRatio.call(self),
-                         total_spent_hours: self.time_values[0],
-                         total_estimated_hours: self.time_values[1])
+                         total_spent_time: self.time_values[0],
+                         total_estimated_time: self.time_values[1])
           current_issue_journal.save
           UpdateParentsDoneRatio.call(self)
         end
@@ -177,7 +177,7 @@ module DoneRatioViaTime
 
         def total_estimated_hours_with_relations
           if self.done_ratio_calculation_type
-            self.read_attribute(:total_estimated_hours)
+            self.read_attribute(:total_estimated_time)
           else
             total_estimated_hours_without_relations
           end
@@ -186,7 +186,7 @@ module DoneRatioViaTime
         def total_spent_hours_with_relations
           # spent_hours_from_relations = issues_with_relation_include_time_from.joins(:time_entries).sum("#{TimeEntry.table_name}.hours").to_f
           if self.done_ratio_calculation_type
-             self.read_attribute(:total_spent_hours)
+             self.read_attribute(:total_spent_time)
           else
             total_spent_hours_without_relations
           end
