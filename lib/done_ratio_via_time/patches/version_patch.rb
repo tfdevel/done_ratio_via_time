@@ -39,8 +39,8 @@ module DoneRatioViaTime
 
         def closed_percent_with_new_logic
           all_issues_sum_estimation = Issue.where(fixed_version_id: self.id).map(&:estimated_hours).compact.sum
-          completed_issues_sum_estimation = Issue.where(fixed_version_id: self.id).where.not(closed_on: nil).map(&:estimated_hours).sum
-          (100*completed_issues_sum_estimation/all_issues_sum_estimation).to_i
+          completed_issues_sum_estimation = Issue.where(fixed_version_id: self.id).where.not(closed_on: nil).map(&:estimated_hours).compact.sum
+          (100*completed_issues_sum_estimation/all_issues_sum_estimation).to_i if all_issues_sum_estimation > 0
         end
       end
     end
