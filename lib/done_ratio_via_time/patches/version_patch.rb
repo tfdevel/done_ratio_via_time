@@ -33,14 +33,18 @@ module DoneRatioViaTime
           if estinated_hours_sum == 0
             0
           else
-            (100*spent_hours_sum/estinated_hours_sum).to_i
+            completed_percent = (100*spent_hours_sum/estinated_hours_sum).to_i
+            completed_percent > 100 ? 100 : completed_percent
           end
         end
 
         def closed_percent_with_new_logic
           all_issues_sum_estimation = Issue.where(fixed_version_id: self.id).map(&:estimated_hours).compact.sum
           completed_issues_sum_estimation = Issue.where(fixed_version_id: self.id).where.not(closed_on: nil).map(&:estimated_hours).compact.sum
-          (100*completed_issues_sum_estimation/all_issues_sum_estimation).to_i if all_issues_sum_estimation > 0
+          if all_issues_sum_estimation > 0
+            closed_percent = (100*completed_issues_sum_estimation/all_issues_sum_estimation).to_i
+            closed_percent > 100 ? 100 : closed_percent
+          end
         end
       end
     end
