@@ -24,6 +24,7 @@ class UpdateParentsDoneRatio
       elsif issue.parent_id_was
         Issue.find_by_id(issue.parent_id_was)
       end
+    update_issue(issue)
 
     issues_from_relations.each do |e|
       update_linked(e)
