@@ -27,7 +27,7 @@ module DoneRatioViaTime
 
       module InstanceMethods
         def completed_percent_with_new_logic
-          issues = Issue.where(fixed_version_id: self.id)
+          issues = Issue.where(fixed_version_id: self.id).where("estimated_hours > ?", "0")
           estinated_hours_sum = issues.map(&:estimated_hours).compact.sum
           spent_hours_sum = TimeEntry.where(issue_id: issues.map(&:id)).map(&:hours).compact.sum
           if estinated_hours_sum == 0
