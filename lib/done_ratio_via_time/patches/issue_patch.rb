@@ -89,7 +89,7 @@ module DoneRatioViaTime
                         DoneRatioSetup.time_overrun_enabled?(project) &&
                         time_entries.all?(&:persisted?)
 
-          if estimated_hours.nil? || time_entries.map(&:hours).compact.sum > estimated_hours
+          if time_entries.map(&:hours).compact.sum > (estimated_hours.nil? ? 0 : estimated_hours)
             errors.add :base, l(:error_max_spent_time)
           end
         end
