@@ -1,3 +1,7 @@
+# Licensed under GNU GPL 2.0
+# Author: Tecforce
+# Website: http://tecforce.ru
+
 module DoneRatioViaTime
   module QueriesHelperPatch
     def self.included(base)
