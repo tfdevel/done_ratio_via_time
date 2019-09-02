@@ -22,7 +22,8 @@ Redmine::Plugin.register :done_ratio_via_time do
                                 statuses_for_hours_alignment: IssueStatus.where(is_closed: true)
                                                                          .pluck(:id).map(&:to_s) },
                       job_successful_complete_at: nil,
-                      job_id: nil }
+                      job_id: nil,
+                      primary_assessment: nil }
 
   project_module :issue_progress do
     permission :edit_done_ratio_calculation_type, job_statuses: [:index]

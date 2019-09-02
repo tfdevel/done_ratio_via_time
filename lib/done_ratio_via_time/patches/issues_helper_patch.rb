@@ -13,6 +13,9 @@ module DoneRatioViaTime
 
           alias_method_chain :show_detail, :done_ratio_calculation_type
           alias_method_chain(:render_issue_relations, :custom_delete_link)
+          alias_method_chain :render_half_width_custom_fields_rows, :primary_assessment
+          alias_method_chain :issue_spent_hours_details, :done_ratio_calculation_type
+          alias_method_chain :issue_estimated_hours_details, :done_ratio_calculation_type
         end
       end
 
@@ -62,6 +65,48 @@ module DoneRatioViaTime
           end
 
           content_tag('table', s, :class => 'list issues odd-even')
+        end
+
+        def render_half_width_custom_fields_rows_with_primary_assessment(issue)
+          if DoneRatioSetup.settings[:global][:primary_assessment]
+            values = issue.visible_custom_field_values.reject {|value| value.custom_field.full_width_layout?}
+            return if values.empty?
+            half = (values.size / 2.0).ceil
+            issue_fields_rows do |rows|
+              values.each_with_index do |value, i|
+                css = "cf_#{value.custom_field.id}"
+                m = (i < half ? :left : :right)
+                primary_assessment_id = DoneRatioSetup.settings[:global][:primary_assessment].to_i
+                custom_field_value =
+                if value.custom_field.id == primary_assessment_id
+                  string = l_hours_short(value.to_s)
+                  string << " (#{l(:label_total)}: #{l_hours_short(issue.time_values[2])})" unless issue.invalid_done_ratio_calculation_type
+                  string
+                else
+                  show_value(value)
+                end
+                rows.send m, custom_field_name_tag(value.custom_field), custom_field_value, :class => css
+              end
+            end
+          else
+            render_half_width_custom_fields_rows_without_primary_assessment(issue)
+          end
+        end
+
+        def issue_spent_hours_details_with_done_ratio_calculation_type(issue)
+          if issue.total_spent_time
+            s = issue.spent_hours > 0 ? l_hours_short(issue.spent_hours) : ""
+            s << " (#{l(:label_total)}: #{l_hours_short(issue.total_spent_time)})" unless issue.invalid_done_ratio_calculation_type
+            s.html_safe
+          end
+        end
+
+        def issue_estimated_hours_details_with_done_ratio_calculation_type(issue)
+          if issue.total_estimated_time.present?
+            s = issue.estimated_hours.present? ? l_hours_short(issue.estimated_hours) : ""
+            s << " (#{l(:label_total)}: #{l_hours_short(issue.total_estimated_time)})" unless issue.invalid_done_ratio_calculation_type
+            s.html_safe
+          end
         end
       end
     end

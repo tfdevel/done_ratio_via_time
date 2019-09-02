@@ -24,6 +24,7 @@ class UpdateParentsDoneRatio
       elsif issue.parent_id_was
         Issue.find_by_id(issue.parent_id_was)
       end
+    update_issue(issue)
 
     issues_from_relations.each do |e|
       update_linked(e)
@@ -55,7 +56,9 @@ class UpdateParentsDoneRatio
   def update_issue(issue)
     current_issue_journal =
       issue.current_journal || issue.init_journal(User.current)
-    issue.update_column(:done_ratio, CalculateDoneRatio.call(issue))
+    issue.update_columns(done_ratio: CalculateDoneRatio.call(issue),
+                         total_spent_time: issue.time_values[0],
+                         total_estimated_time: issue.time_values[1])
     current_issue_journal.save
   end
 end

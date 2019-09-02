@@ -34,3 +34,6 @@ en:
   error_manual_mode_is_restricted: Manual mode is forbidden for current tracker
   label_global_value: default from plugin settings
   label_statuses_for_hours_alignment: Statuses for automatic leveling of estimates and spent hours
+  label_use_as_primary_assessment: Use the field as a primary assessment
+  field_total_estimated_time: Total estimated time
+  field_total_spent_time: Total spent time

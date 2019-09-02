@@ -18,6 +18,8 @@ module DoneRatioViaTime
           alias_method_chain :done_ratio_derived?, :auto_calculation
           alias_method_chain :done_ratio, :calculation_type
           alias_method_chain :safe_attributes=, :done_ratio_check
+          alias_method_chain :total_estimated_hours, :relations
+          alias_method_chain :total_spent_hours, :relations
 
           class << self
             alias_method_chain :use_field_for_done_ratio?, :hide_selector_field
@@ -87,10 +89,8 @@ module DoneRatioViaTime
                         DoneRatioSetup.time_overrun_enabled?(project) &&
                         time_entries.all?(&:persisted?)
 
-          if estimated_hours.present?
-            if time_entries.map(&:hours).sum > estimated_hours
-              errors.add :base, l(:error_max_spent_time)
-            end
+          if time_entries.map(&:hours).compact.sum > (estimated_hours.nil? ? 0 : estimated_hours)
+            errors.add :base, l(:error_max_spent_time)
           end
         end
 
@@ -169,6 +169,32 @@ module DoneRatioViaTime
                                .include?(tracker_id.to_s)
             errors.add :base, l(:error_manual_mode_is_restricted)
           end
+        end
+
+        def total_estimated_hours_with_relations
+          if self.done_ratio_calculation_type
+            self.read_attribute(:total_estimated_time)
+          else
+            total_estimated_hours_without_relations
+          end
+        end
+
+        def total_spent_hours_with_relations
+          # spent_hours_from_relations = issues_with_relation_include_time_from.joins(:time_entries).sum("#{TimeEntry.table_name}.hours").to_f
+          if self.done_ratio_calculation_type
+             self.read_attribute(:total_spent_time)
+          else
+            total_spent_hours_without_relations
+          end
+        end
+
+        def time_values
+          _, values = CalculateDoneRatio.new.send :time_values, self
+          values
+        end
+
+        def invalid_done_ratio_calculation_type
+          [Issue::CALCULATION_TYPE_MANUAL, Issue::CALCULATION_TYPE_SELF].include? self.done_ratio_calculation_type
         end
       end
     end

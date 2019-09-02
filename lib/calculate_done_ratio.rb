@@ -31,7 +31,7 @@ class CalculateDoneRatio
   private
 
   def time_values(issue, ids = [], include_current_time = false)
-    return [ids, [0, 0]] if ids.include?(issue.id)
+    return [ids, [0, 0, 0]] if ids.include?(issue.id)
 
     done_ratio_calculation_type =
       Issue.done_ratio_calculation_type_transformed(issue)
@@ -57,16 +57,26 @@ class CalculateDoneRatio
     if time_params.present?
       [ids << issue.id, time_params]
     else
-      [ids << issue.id, [0, 0]]
+      [ids << issue.id, [0, 0, 0]]
     end
   end
 
   def done_ratio_self_values(issue)
     spent_hours = issue.time_entries.sum(:hours) || 0.0
-    [spent_hours, issue.estimated_hours.to_f]
+    primary_assessment_id = DoneRatioSetup.settings[:global][:primary_assessment].to_i
+    primary_assessment = CustomValue.find_by(customized_type: 'Issue',
+                                             customized_id: issue.id,
+                                             custom_field_id: primary_assessment_id)
+    custom_value =
+    if primary_assessment
+      primary_assessment.value.to_f
+    else
+      0
+    end
+    [spent_hours, issue.estimated_hours.to_f, custom_value]
   end
 
-  def done_ratio_result(spent_hours, estimated_hours)
+  def done_ratio_result(spent_hours, estimated_hours, primary_assessment)
     if spent_hours > 0 && estimated_hours.to_f > 0
       if spent_hours >= estimated_hours
         100
@@ -79,8 +89,11 @@ class CalculateDoneRatio
   end
 
   def ratios_sum(arr)
-    arr.reject { |e| e[1].zero? }
-       .transpose.map { |e| e.reduce(:+) }
+    if arr[1].present?
+      arr.reject { |e| e[1].zero? }.transpose.map { |e| e.reduce(:+) }
+    else
+      arr.transpose.map { |e| e.reduce(:+) }
+    end
   end
 
   def done_ratio_descendants_values(issue, ids, include_current_time = false)
@@ -111,6 +124,7 @@ class CalculateDoneRatio
       ids, values = time_values(child, ids, true)
       values
     end
+
     ratios_sum(res + [done_ratio_self_values(issue)])
   end
 

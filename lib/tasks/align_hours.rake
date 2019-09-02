@@ -14,7 +14,9 @@ namespace :redmine do
         spent_hours = issue.time_entries.map(&:hours).sum || 0.0
         next if spent_hours == issue.estimated_hours
         current_issue_journal = issue.current_journal || issue.init_journal(User.current)
-        issue.update_column(:estimated_hours, spent_hours)
+        issue.update_columns(estimated_hours: spent_hours,
+                            total_spent_time: issue.time_values[0],
+                            total_estimated_time: issue.time_values[1])
         current_issue_journal.save
         done_ratio = CalculateDoneRatio.call(issue)
         if done_ratio != issue.done_ratio

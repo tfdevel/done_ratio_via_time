@@ -28,6 +28,11 @@
       <label><%=l(:label_statuses_for_hours_alignment)%></label>
       <%= select_tag 'settings[statuses_for_hours_alignment]', options_from_collection_for_select(IssueStatus.sorted, :id, :name, @settings[:statuses_for_hours_alignment]), multiple: true %>
     </p>
+    <p>
+      <label><%= l(:label_use_as_primary_assessment) %></label>
+      <%= select_tag 'settings[primary_assessment]',
+          options_from_collection_for_select(IssueCustomField.sorted, :id, :name, @settings[:primary_assessment]), :include_blank => true %>
+    </p>
     <%= submit_tag l(:button_apply), :class => "small", :name => nil %>
   <% end %>
 </div>
