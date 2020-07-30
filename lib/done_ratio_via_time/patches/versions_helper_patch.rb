@@ -31,7 +31,7 @@ module DoneRatioViaTime
 
           h = Hash.new {|k,v| k[v] = [0, 0]}
           begin
-            issues = version.fixed_issues
+            issues = version.fixed_issues.where("estimated_hours > ?", "0")
             issues.group(criteria).sum(:estimated_hours).each do |c,s|
               h[c][0] = s
             end

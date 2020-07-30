@@ -14,26 +14,27 @@ class UpdateParentsDoneRatio
   private
 
   def update_parents(issue)
-    issues_from_relations = Issue.where(id: issue.relations_to
-                                 .where(relation_type:
-                                   IssueRelation::TYPE_INCLUDE_TIME_FROM)
-                                 .select(:issue_from_id)).to_a
-    parent =
-      if issue.parent_id
-        issue.parent
-      elsif issue.parent_id_was
-        Issue.find_by_id(issue.parent_id_was)
-      end
+    # issues_from_relations = Issue.where(id: issue.relations_to
+    #                              .where(relation_type:
+    #                                IssueRelation::TYPE_INCLUDE_TIME_FROM)
+    #                              .select(:issue_from_id)).to_a
+    # parent =
+    #   if issue.parent_id
+    #     issue.parent
+    #   elsif issue.parent_id_was
+    #     Issue.find_by_id(issue.parent_id_was)
+    #   end
+    update_issue(issue)
 
-    issues_from_relations.each do |e|
-      update_linked(e)
-      update_parents(e)
-    end
+    # issues_from_relations.each do |e|
+    #   update_linked(e)
+    #   update_parents(e)
+    # end
 
-    return unless parent
+    # return unless parent
 
-    update_parent(parent)
-    update_parents(parent)
+    # update_parent(parent)
+    # update_parents(parent)
   end
 
   def update_linked(issue)
@@ -55,9 +56,10 @@ class UpdateParentsDoneRatio
   def update_issue(issue)
     current_issue_journal =
       issue.current_journal || issue.init_journal(User.current)
+    total_values = issue.time_values
     issue.update_columns(done_ratio: CalculateDoneRatio.call(issue),
-                         total_spent_time: issue.time_values[0],
-                         total_estimated_time: issue.time_values[1])
+                         total_spent_time: total_values[0],
+                         total_estimated_time: total_values[1])
     current_issue_journal.save
   end
 end

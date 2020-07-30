@@ -51,10 +51,11 @@ module DoneRatioViaTime
 
         def set_calculated_done_ratio(i)
           i.init_journal(User.current)
-          i.update_columns(total_estimated_time: i.time_values[1],
-                           total_spent_time: i.time_values[0])
-          i.done_ratio = CalculateDoneRatio.call(i)
-          i.save
+          total_values = i.time_values
+          i.update_columns(done_ratio: CalculateDoneRatio.call(i),
+                           total_estimated_time: total_values[1],
+                           total_spent_time: total_values[0])
+
           UpdateParentsDoneRatio.call(i)
         end
       end

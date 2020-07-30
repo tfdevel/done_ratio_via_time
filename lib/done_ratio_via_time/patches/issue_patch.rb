@@ -89,10 +89,8 @@ module DoneRatioViaTime
                         DoneRatioSetup.time_overrun_enabled?(project) &&
                         time_entries.all?(&:persisted?)
 
-          if estimated_hours.present?
-            if time_entries.map(&:hours).sum > estimated_hours
-              errors.add :base, l(:error_max_spent_time)
-            end
+          if time_entries.map(&:hours).compact.sum > (estimated_hours.nil? ? 0 : estimated_hours)
+            errors.add :base, l(:error_max_spent_time)
           end
         end
 
@@ -158,9 +156,7 @@ module DoneRatioViaTime
 
         def set_calculated_done_ratio
           current_issue_journal = current_journal || init_journal(User.current)
-          update_columns(done_ratio: CalculateDoneRatio.call(self),
-                         total_spent_time: self.time_values[0],
-                         total_estimated_time: self.time_values[1])
+          update_column(:done_ratio, CalculateDoneRatio.call(self))
           current_issue_journal.save
           UpdateParentsDoneRatio.call(self)
         end

@@ -35,3 +35,5 @@ ru:
   label_global_value: глобальное значение
   label_statuses_for_hours_alignment: Статусы для автоматического выравнивания оценки и трудозатрат
   label_use_as_primary_assessment: Использовать поле как первичную оценку
+  field_total_estimated_time: Общая оценка временных затрат
+  field_total_spent_time: Всего затрачено времени

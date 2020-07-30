@@ -12,6 +12,7 @@ require 'calculate_done_ratio'
 require 'update_parents_done_ratio'
 
 require 'workers/issue_done_ratio_recalculation_worker'
+require 'workers/issue_calculate_worker'
 
 Rails.configuration.to_prepare do
   # patches

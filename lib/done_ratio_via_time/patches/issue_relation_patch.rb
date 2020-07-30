@@ -49,10 +49,10 @@ module DoneRatioViaTime
                     !issue_from.project.try(:module_enabled?, :issue_progress)
 
           issue_from.init_journal(User.current)
-          issue_from.update_columns(total_estimated_time: issue_from.time_values[1],
-                                    total_spent_time: issue_from.time_values[0])
-          issue_from.done_ratio = CalculateDoneRatio.call(issue_from)
-          issue_from.save
+          total_values = issue_from.time_values
+          issue_from.update_columns(done_ratio: CalculateDoneRatio.call(issue_from),
+                                    total_estimated_time: total_values[1],
+                                    total_spent_time: total_values[0])
           UpdateParentsDoneRatio.call(issue_from)
         end
       end

@@ -27,20 +27,26 @@ module DoneRatioViaTime
 
       module InstanceMethods
         def completed_percent_with_new_logic
-          issues = Issue.where(fixed_version_id: self.id)
+          issues = Issue.where(fixed_version_id: self.id).where("estimated_hours > ?", "0")
           estinated_hours_sum = issues.map(&:estimated_hours).compact.sum
           spent_hours_sum = TimeEntry.where(issue_id: issues.map(&:id)).map(&:hours).compact.sum
           if estinated_hours_sum == 0
             0
           else
-            (100*spent_hours_sum/estinated_hours_sum).to_i
+            completed_percent = (100*spent_hours_sum/estinated_hours_sum).to_i
+            completed_percent > 100 ? 100 : completed_percent
           end
         end
 
         def closed_percent_with_new_logic
           all_issues_sum_estimation = Issue.where(fixed_version_id: self.id).map(&:estimated_hours).compact.sum
-          completed_issues_sum_estimation = Issue.where(fixed_version_id: self.id).where.not(closed_on: nil).map(&:estimated_hours).sum
-          (100*completed_issues_sum_estimation/all_issues_sum_estimation).to_i
+          completed_issues_sum_estimation = Issue.where(fixed_version_id: self.id).where.not(closed_on: nil).map(&:estimated_hours).compact.sum
+          if all_issues_sum_estimation == 0
+            0
+          else
+            closed_percent = (100*completed_issues_sum_estimation/all_issues_sum_estimation).to_i
+            closed_percent > 100 ? 100 : closed_percent
+          end
         end
       end
     end
