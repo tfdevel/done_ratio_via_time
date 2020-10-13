@@ -60,6 +60,7 @@ class UpdateParentsDoneRatio
     issue.update_columns(done_ratio: CalculateDoneRatio.call(issue),
                          total_spent_time: total_values[0],
                          total_estimated_time: total_values[1])
+    current_issue_journal.notify = false
     current_issue_journal.save
   end
 end

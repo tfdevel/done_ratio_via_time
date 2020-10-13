@@ -143,6 +143,7 @@ module DoneRatioViaTime
 
           current_issue_journal = current_journal || init_journal(User.current)
           update_column(:estimated_hours, spent_hours)
+          current_issue_journal.notify = false
           current_issue_journal.save
         end
 
@@ -157,6 +158,7 @@ module DoneRatioViaTime
         def set_calculated_done_ratio
           current_issue_journal = current_journal || init_journal(User.current)
           update_column(:done_ratio, CalculateDoneRatio.call(self))
+          current_issue_journal.notify = false
           current_issue_journal.save
           UpdateParentsDoneRatio.call(self)
         end

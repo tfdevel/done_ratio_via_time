@@ -13,6 +13,7 @@ namespace :redmine do
         issue.update_columns(estimated_hours: spent_hours,
                             total_spent_time: total[0],
                             total_estimated_time: total[1])
+        current_issue_journal.notify = false
         current_issue_journal.save
         done_ratio = CalculateDoneRatio.call(issue)
         if done_ratio != issue.done_ratio
