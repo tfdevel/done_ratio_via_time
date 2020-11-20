@@ -15,7 +15,7 @@ namespace :redmine do
                             total_estimated_time: total[1])
         current_issue_journal.notify = false
         current_issue_journal.save
-        done_ratio = CalculateDoneRatio.call(issue)
+        done_ratio = CalculateDoneRatio.call(issue, false)
         if done_ratio != issue.done_ratio
           current_issue_journal = issue.current_journal || issue.init_journal(User.current)
           issue.update_column(:done_ratio, done_ratio)

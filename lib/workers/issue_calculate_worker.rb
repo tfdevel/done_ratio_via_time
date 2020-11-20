@@ -10,6 +10,6 @@ class IssueCalculateWorker
 
   def perform(id)
     issue = Issue.find id
-    issue.set_calculated_done_ratio
+    issue.set_calculated_done_ratio(false)
   end
 end

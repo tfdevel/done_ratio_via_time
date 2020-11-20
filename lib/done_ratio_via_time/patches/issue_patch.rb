@@ -155,12 +155,12 @@ module DoneRatioViaTime
           set_calculated_done_ratio
         end
 
-        def set_calculated_done_ratio
+        def set_calculated_done_ratio(recalculate_parents=true)
           current_issue_journal = current_journal || init_journal(User.current)
           update_column(:done_ratio, CalculateDoneRatio.call(self))
-          current_issue_journal.notify = false
+          current_issue_journal.notify = recalculate_parents
           current_issue_journal.save
-          UpdateParentsDoneRatio.call(self)
+          UpdateParentsDoneRatio.call(self, recalculate_parents)
         end
 
         def manual_calculation_type_allowed?

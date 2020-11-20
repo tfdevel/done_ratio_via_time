@@ -24,7 +24,7 @@ class IssueDoneRatioRecalculationWorker
     count = issues.count
     loop do
       issues.find_each do |issue|
-        issue.set_calculated_done_ratio
+        issue.set_calculated_done_ratio(false)
       end
       issues_from_relations_ids = IssueRelation.where(relation_type: IssueRelation::TYPE_INCLUDE_TIME_FROM, issue_to_id: issues.pluck(:id)).pluck(:issue_from_id)
       parents_ids = issues.pluck(:parent_id).compact
@@ -38,7 +38,7 @@ class IssueDoneRatioRecalculationWorker
 
     issues_with_default_values = Issue.where(total_estimated_time: nil)
     issues_with_default_values.find_each do |issue|
-      issue.set_calculated_done_ratio
+      issue.set_calculated_done_ratio(false)
     end
     Issue.where(total_spent_time: nil).update_all("total_spent_time = 0.0")
     DoneRatioSetup.setting[:job_successful_complete_at] = Time.now
