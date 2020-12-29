@@ -55,6 +55,7 @@ module DoneRatioViaTime
           validate :hours_overrun
 
           before_save :set_changes # fix for redmine 3.3.x
+          after_save :check_parent_task
           after_save :align_hours
           after_save :update_issue_done_ratio
 
@@ -133,6 +134,14 @@ module DoneRatioViaTime
                                                      :done_ratio_calculation_type,
                                                      :parent_id)
           @status_id_changed = changes[:status_id]
+        end
+
+        def check_parent_task
+          parent_id_changed = self.parent_id_was != self.parent_id
+          if parent_id_changed && self.parent_id_was
+            parent_task = Issue.find self.parent_id_was
+            UpdateParentsDoneRatio.call(parent_task, true) if parent_task
+          end
         end
 
         def align_hours
