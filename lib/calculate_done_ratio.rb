@@ -36,8 +36,6 @@ class CalculateDoneRatio
     done_ratio_calculation_type =
       Issue.done_ratio_calculation_type_transformed(issue)
 
-    issue.reload
-
     time_params =
       case done_ratio_calculation_type
       when Issue::CALCULATION_TYPE_SELF
