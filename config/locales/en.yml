@@ -37,3 +37,5 @@ en:
   label_use_as_primary_assessment: Use the field as a primary assessment
   field_total_estimated_time: Total estimated time
   field_total_spent_time: Total spent time
+  label_block_spent_time_for_statuses: Block spent time registration for statuses
+  error_issue_status_blocked: Spent time registration is blocked for this task status

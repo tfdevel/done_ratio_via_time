@@ -37,3 +37,5 @@ ru:
   label_use_as_primary_assessment: Использовать поле как первичную оценку
   field_total_estimated_time: Общая оценка временных затрат
   field_total_spent_time: Всего затрачено времени
+  label_block_spent_time_for_statuses: Блокировать регистрацию трудозатрат для статусов
+  error_issue_status_blocked: Регистрация затраченного времени для данного статуса задачи запрещена

@@ -9,6 +9,7 @@ module DoneRatioViaTime
         base.send(:include, InstanceMethods)
         base.class_eval do
           validate :hours_overrun
+          validate :check_blocked_statuses
 
           before_save :set_changes  # fix for redmine 3.3.x
           after_save :update_issue_done_ratio
@@ -40,6 +41,13 @@ module DoneRatioViaTime
             end
           else
             errors.add :base, l(:error_issue_not_estimated)
+          end
+        end
+
+        def check_blocked_statuses
+          return unless issue && DoneRatioSetup.block_spent_time_statuses
+          if DoneRatioSetup.block_spent_time_statuses.include?(issue.status)
+            errors.add :base, l(:error_issue_status_blocked)
           end
         end
 

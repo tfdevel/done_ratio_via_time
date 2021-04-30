@@ -33,6 +33,7 @@ class DoneRatioViaTimeSettingsController < ApplicationController
                                      :primary_assessment,
                                      :enable_time_overrun,
                                      trackers_with_disabled_manual_mode: [],
-                                     statuses_for_hours_alignment: [])
+                                     statuses_for_hours_alignment: [],
+                                     block_spent_time_status_ids: [])
   end
 end

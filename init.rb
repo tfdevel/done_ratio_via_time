@@ -23,7 +23,9 @@ Redmine::Plugin.register :done_ratio_via_time do
                                                                          .pluck(:id).map(&:to_s) },
                       job_successful_complete_at: nil,
                       job_id: nil,
-                      primary_assessment: nil }
+                      primary_assessment: nil,
+                      block_spent_time_status_ids: [] },
+           partial: 'done_ratio_via_time/settings'
 
   project_module :issue_progress do
     permission :edit_done_ratio_calculation_type, job_statuses: [:index]

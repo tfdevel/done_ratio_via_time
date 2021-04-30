@@ -73,4 +73,9 @@ module DoneRatioSetup
     end
   end
   module_function :time_overrun_enabled?
+
+  def block_spent_time_statuses
+    IssueStatus.where(id: settings[:global][:block_spent_time_status_ids])
+  end
+  module_function :block_spent_time_statuses
 end
